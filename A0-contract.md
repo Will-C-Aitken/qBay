@@ -42,9 +42,9 @@ Student Number:
 
 Team Member #2:
 
-Name:
+Name: Alex Koch-Fitsialos
 
-Student Number:	
+Student Number:	20055172
 
 
 Team Member #3:
