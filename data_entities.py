@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime   # Need for fields that include times
+from sqlalchemy import ForeignKey  # Need for relationships between tables
 
 # For now instantiate the app in this file, but will later migrate to using an
 # application factory
@@ -11,6 +13,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
 # Connect the database with the app
 db = SQLAlchemy(app)
+
+# Added in to suppress warning message
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 '''
@@ -26,6 +31,7 @@ Attributes:
     Balance - User's account balance in CAD
 '''
 
+
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -34,6 +40,7 @@ class User(db.Model):
     balance = db.Column(db.Float)
     def __repr__(self):
         return '<User %r>' % self.username
+
 
 '''
     class Product attributes:
@@ -62,4 +69,29 @@ class Product(db.Model):
 
     def __repr__(self):
         return '<Product %r>' % self.name
+
+
+"""
+    An implementation of the Review class for Qbay.
+    Review attributes:
+    id - the unique id for each reivew
+    author_id - the id of the author (of class User) for the review
+    product_id - the id of the product (of class Product) for the reive
+    rating - the rating (and int) of the product
+    feedback - Text feedback on the product
+    time - the time that the review was posted
+"""
+
+
+class Review(db.Model):
+    __tablename__ = 'review'
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.Integer, ForeignKey('product.id'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)     # boundaries on rating value will be added later
+    feedback = db.Column(db.Text)
+    time = db.Column(db.DateTime, default=datetime.utcnow())
+
+    def __repr__(self):
+        return "<Review id: %r>" % self.id
 
