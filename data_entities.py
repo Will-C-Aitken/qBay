@@ -13,19 +13,24 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 db = SQLAlchemy(app)
 
 
-# User database class that extends the database model class by default. Will be
-# converted to SQL statements by SQLAlchemy
+'''
+User database class that extends the database model class by default. Will be
+converted to SQL statements by SQLAlchemy
+
+Attributes:
+    user_id - Unique user identifier
+    username - Unique username
+    email - User's email, must be unique
+    password - For now store password as plaintext. Will need to update for
+    security
+    Balance - User's account balance in CAD
+'''
+
 class User(db.Model):
-    # Identification unique to each user. Will act as the primary key
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    # For now store password as plaintext. Will need to update for security in
-    # the future
     password = db.Column(db.String(30), nullable=False)
-    # Balance in dollars of the user. NULL signifies a balance of $0.00
     balance = db.Column(db.Float)
-
-    # For now set the representation of a user as their username
     def __repr__(self):
         return '<User %r>' % self.username
