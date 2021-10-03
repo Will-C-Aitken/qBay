@@ -189,3 +189,8 @@ def login(email, password):
     if len(valids) != 1:
         return None
     return valids[0]
+
+#def update_user(email, username=None, shipping_address=None, postal_code=None):
+# return True if successful, and False otherwise
+
+
