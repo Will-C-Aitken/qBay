@@ -27,14 +27,14 @@ class User(db.Model):
     '''
 
     email = db.Column(db.String(120), primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(80), nullable=False)
     # Consider implementing secure hashing. Not a requirement for now
     password = db.Column(db.String(120), nullable=False)
 
     shipping_address = (db.String(200))
     postal_code = (db.String(6))
 
-    balance = db.Column(db.Float, nullable=False)
+    balance = db.Column(db.Float)
 
     # one-to-many relationship with product
     products = db.relationship('Product', backref='user', lazy=True)
