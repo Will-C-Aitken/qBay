@@ -159,6 +159,10 @@ def register(name, email, password):
     Returns:
        True if registration succeeded otherwise False
     '''
+    # check that both username and password are not empty
+    if (not email) or (not password):
+        return False
+
     # check if the email has been used:
     existed = User.query.filter_by(email=email).all()
     if len(existed) > 0:

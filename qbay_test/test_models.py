@@ -1,6 +1,18 @@
 from qbay.models import register, login
 
 
+def test_r1_1_user_register():
+    '''
+    Testing R1-1: Both the email and password cannot be empty
+    '''
+
+    assert register('u0', '', '123456') is False
+    assert register('u0', '', '123456') is False
+    assert register('u0', 'test0@test.com', '') is False
+    assert register('u0', 'test0@test.com', '') is False
+    assert register('u0', '', '') is False
+
+
 def test_r1_7_user_register():
     '''
     Testing R1-7: If the email has been used, the operation failed.
