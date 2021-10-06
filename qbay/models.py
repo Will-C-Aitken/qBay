@@ -182,6 +182,7 @@ def register(name, email, password):
 
     return True
 
+
 def check_email(email):
     '''
     Verify that email conforms to RFC 5322 (with a few extra constraints, 
@@ -221,7 +222,8 @@ def login(email, password):
         return None
     return valids[0]
 
-#def update_user(email, username=None, shipping_address=None, postal_code=None):
-# return True if successful, and False otherwise
 
-
+'''
+def update_user(email, username=None, shipping_address=None, postal_code=None):
+    return True if successful, and False otherwise
+'''

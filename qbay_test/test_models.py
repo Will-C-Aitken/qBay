@@ -23,6 +23,7 @@ def test_r1_2_user_register():
     assert register('u0', 'test0@test.com', '123456') is True
     assert register('u1', 'test0@test.com', '123456') is False
 
+
 def test_r1_3_user_register():
     '''
     Testing R1-3: The email has to follow addr-spec defined in RFC 5322
@@ -48,8 +49,8 @@ def test_r1_3_user_register():
     assert register('u0', 'test@test', '123456') is False
     # local name too long
     assert register('u0',
-                    '11111111111111111111111111111111111111111111111111'\
-                    '11111111111111@test', '123456') is False
+                    ('11111111111111111111111111111111111111111111111111'
+                     '11111111111111@test'), '123456') is False
 
 
 def test_r1_7_user_register():
