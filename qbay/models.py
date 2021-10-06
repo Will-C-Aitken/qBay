@@ -206,6 +206,30 @@ def check_email(email):
         return False
 
 
+def check_pass(password):
+    '''
+    Verify that password conforms to requirements, i.e. is at least 6
+    characters, at least one upper and one lower case letters, and at least one
+    special character (one of [@$!%*?&])
+
+    Parameters:
+        password (string):    user password
+
+    Returns:
+        True if the password is valid, otherwise False
+    '''
+    
+    # r'(at least one lower case)(at least one upper case)(at least one
+    # special)total 6 or greater characters')
+    password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
+                      r'[a-zA-Z0-9@$!%*?&]{6,0}$')
+
+    if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False
+
+
 def login(email, password):
     '''
     Check login information
