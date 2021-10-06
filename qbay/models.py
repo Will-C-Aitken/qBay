@@ -1,6 +1,7 @@
 from qbay import app
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import re
 
 '''
 This file defines data models and related business logics
@@ -163,6 +164,10 @@ def register(name, email, password):
     if (not email) or (not password):
         return False
 
+    # check that email format is correct
+    if not check_email(email):
+        return False
+
     # check if the email has been used:
     existed = User.query.filter_by(email=email).all()
     if len(existed) > 0:
@@ -176,6 +181,28 @@ def register(name, email, password):
     db.session.commit()
 
     return True
+
+def check_email(email):
+    '''
+    Verify that email conforms to RFC 5322 (with a few extra constraints, 
+    each noted, for simplicity)
+
+    Parameters:
+        email (string):    user email
+
+    Returns:
+        True if the email is valid, otherwise False
+    '''
+    
+    # assuming unquoted local part of address, refusing dots in any part of
+    # the local name, and refusing hyphens in the domain.
+    email_regex = (r'\b[A-Za-z0-9!#$&\'*+\-/=?^_`{|}~]{1,64}@'
+                   r'([A-Za-z0-9]+\.)+[A-Za-z0-9]+\b')
+
+    if re.fullmatch(email_regex, email):
+        return True
+    else:
+        return False
 
 
 def login(email, password):
