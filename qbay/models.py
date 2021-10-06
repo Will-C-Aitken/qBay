@@ -168,6 +168,14 @@ def register(name, email, password):
     if not check_email(email):
         return False
 
+    # check that password format is correct
+    if not check_pass(password):
+        return False
+
+    # check that username format is correct
+    if not check_username(name):
+        return False
+
     # check if the email has been used:
     existed = User.query.filter_by(email=email).all()
     if len(existed) > 0:
@@ -222,9 +230,32 @@ def check_pass(password):
     # r'(at least one lower case)(at least one upper case)(at least one
     # special)total 6 or greater characters')
     password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
-                      r'[a-zA-Z0-9@$!%*?&]{6,0}$')
+                      r'[a-zA-Z0-9@$!%*?&]{6,}$')
 
     if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False
+
+
+def check_username(username):
+    '''
+    Verify that username conforms to requirements, i.e. is longer than 2
+    characters, less than 20 characters, alphanumeric-only, and neither
+    beginnning or ending in spaces
+
+    Parameters:
+        username (string):    user username
+
+    Returns:
+        True if the username is valid, otherwise False
+    '''
+    
+    # not space regexes at beginning and end count as one character so only
+    # need 1-17 middle characters to be between (2, 20) exclusive
+    username_regex = r'[a-zA-Z0-9][a-zA-Z0-9 ]{1,17}[a-zA-Z0-9]'
+
+    if re.fullmatch(username_regex, username):
         return True
     else:
         return False
