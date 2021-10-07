@@ -1,6 +1,7 @@
 from qbay import app
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import re
 
 '''
 This file defines data models and related business logics
@@ -173,6 +174,54 @@ def register(name, email, password):
 
     return True
 
+def check_address(addr):
+    #validates an address
+    return len(addr) > 0 and addr.isalnum()
+
+def check_postal_code(ps_code):
+    #validates a postal code using regex
+    regex = '[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\s\d[ABCEGHJ-NPRSTV-Z]\d'
+    m = re.match(regex, ps_code)
+    return m != None
+
+def update(email, password, update_params):
+    '''
+    Update a user
+
+    Parameters:
+        email (string):    user email
+        password (string): user password
+        update_params:   Hash table of entries to update
+
+    Returns:
+       True if update succeeded otherwise False
+    '''
+    #check if user creds can be authed by db
+    valids = User.query.filter_by(email=email, password=password).first()
+    if len(valids) != 1:
+        return False
+    
+    #validate the update parameters
+    if 'shipping_address' in update_params:
+        if not check_address(update_params['shipping_address']):
+            return False
+    if 'postal_code' in update_params:
+        if not check_postal_code(update_postal_code['postal_code']):
+            return False
+    if 'username' in update_params:
+        if not check_username(update_username['username']):
+            return False
+
+    #update parameters
+    if 'shipping_address' in update_params:
+        valids.shipping_address=update_params['shipping_address']
+    if 'postal_code' in update_params:
+        valids.postal_code=update_params['postal_code']
+    if 'username' in update_params:
+        valids.username=update_params['username']
+    db.commit()
+
+    return True
 
 def login(email, password):
     '''
