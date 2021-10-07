@@ -174,6 +174,7 @@ def register(name, email, password):
 
     return True
 
+
 def check_address(addr):
     #validates an address
     return len(addr) > 0 and addr.isalnum()
@@ -183,6 +184,7 @@ def check_postal_code(ps_code):
     regex = '[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\s\d[ABCEGHJ-NPRSTV-Z]\d'
     m = re.match(regex, ps_code)
     return m != None
+
 
 def update(email, password, update_params):
     '''
@@ -222,6 +224,7 @@ def update(email, password, update_params):
     db.commit()
 
     return True
+
 
 def login(email, password):
     '''

@@ -39,17 +39,17 @@ def test_r3_update():
       u1 in database)
     '''
 
-    result = login('test0@test.com', 123456, {'username': 'apache'})
+    result = update('test0@test.com', 123456, {'username': 'apache'})
     assert result is not False
-    result = login('test0@test.com', 123456, {'username': ''})
+    result = update('test0@test.com', 123456, {'username': ''})
     assert result is False
 
-    result = login('test0@test.com', 123456, {'postal_code': 'N2P 4M1'})
+    result = update('test0@test.com', 123456, {'postal_code': 'N2P 4M1'})
     assert result is not False
-    result = login('test0@test.com', 123456, {'postal_code': 'aaa 123'})
+    result = update('test0@test.com', 123456, {'postal_code': 'aaa 123'})
     assert result is False
 
-    result = login('test0@test.com', 123456, {'shipping_address': '123 fake st'})
+    result = update('test0@test.com', 123456, {'shipping_address': '123 fake st'})
     assert result is not False
-    result = login('test0@test.com', 123456, {'shipping_address': '123 fake st!'})
+    result = update('test0@test.com', 123456, {'shipping_address': '123 fake st!'})
     assert result is False
