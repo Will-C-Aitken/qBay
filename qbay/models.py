@@ -32,10 +32,10 @@ class User(db.Model):
     # Consider implementing secure hashing. Not a requirement for now
     password = db.Column(db.String(120), nullable=False)
 
-    shipping_address = (db.String(200))
-    postal_code = (db.String(6))
+    shipping_address = db.Column(db.String(200), default='')
+    postal_code = db.Column(db.String(6), default='')
 
-    balance = db.Column(db.Float)
+    balance = db.Column(db.Float, default=100.00)
 
     # one-to-many relationship with product
     products = db.relationship('Product', backref='user', lazy=True)

@@ -8,8 +8,8 @@ def test_r1_1_user_register():
 
     assert register('user0', '', 'Legalpass!') is False
     assert register('user0', '', 'Legalpass!') is False
-    assert register('user0', 'test0@test.com', '') is False
-    assert register('user0', 'test0@test.com', '') is False
+    assert register('user0', 'test@test.com', '') is False
+    assert register('user0', 'test@test.com', '') is False
     assert register('user0', '', '') is False
 
 
@@ -20,7 +20,7 @@ def test_r1_2_user_register():
 
     # Being unable to add a new user with the same email ensures that all 
     # users are uniquely identified by their email
-    assert register('user0', 'test0@test.com', 'Legalpass!') is True
+    assert register('user', 'test0@test.com', 'Legalpass!') is True
     assert register('user1', 'test0@test.com', 'Legalpass!') is False
 
 
@@ -61,13 +61,13 @@ def test_r1_4_user_register():
     '''
 
     # Length 5
-    assert register('user0', 'test0@test.com', 'Lega!') is False
+    assert register('user0', 'test@test.com', 'Lega!') is False
     # No upper case
-    assert register('user0', 'test0@test.com', 'legalpass!') is False
+    assert register('user0', 'test@test.com', 'legalpass!') is False
     # No lower case
-    assert register('user0', 'test0@test.com', 'LEGALPASS!') is False
+    assert register('user0', 'test@test.com', 'LEGALPASS!') is False
     # No special character 
-    assert register('user0', 'test0@test.com', 'legalpass') is False
+    assert register('user0', 'test@test.com', 'legalpass') is False
 
 
 def test_r1_5_user_register():                    
@@ -77,15 +77,29 @@ def test_r1_5_user_register():
     '''
 
     # empty
-    assert register('', 'test0@test.com', 'Legalpass!') is False
+    assert register('', 'test@test.com', 'Legalpass!') is False
     # special characters
-    assert register('user0!', 'test0@test.com', 'Legalpass!') is False
+    assert register('user0!', 'test@test.com', 'Legalpass!') is False
     # space at the start
-    assert register(' user0', 'test0@test.com', 'Legalpass!') is False
+    assert register(' user0', 'test@test.com', 'Legalpass!') is False
     # space at the end
-    assert register('user0 ', 'test0@test.com', 'Legalpass!') is False
+    assert register('user0 ', 'test@test.com', 'Legalpass!') is False
     # space in the middle
     assert register('user 0', 'test2@test.com', 'Legalpass!') is True
+
+
+def test_r1_6_user_register():                    
+    '''
+    Testing R1-6: User name has to be longer than 2 characters and less than 20
+    characters.
+    '''
+
+    # too short
+    assert register('u0', 'test@test.com', 'Legalpass!') is False
+
+    # too long
+    assert register('u1111111111111111111', 
+                    'test@test.com', 'Legalpass!') is False
 
 
 def test_r1_7_user_register():
@@ -95,9 +109,48 @@ def test_r1_7_user_register():
 
     # Users with the same username can be added but not the same email.
     # test0@test.com was used in R1-2
-    assert register('user0', 'test1@test.com', 'Legalpass!') is True
+    assert register('user', 'test1@test.com', 'Legalpass!') is True
     assert register('user1', 'test0@test.com', 'Legalpass!') is False
 
+
+def test_r1_8_user_register():
+    '''
+    Testing R1-8: Shipping address is empty at the time of registration.
+    '''
+
+    # If email test0@test.com, registered without a shipping address, 
+    # still has an empty shipping address, the condition is satisfied
+    user = login('test0@test.com', 'Legalpass!')
+    assert user.shipping_address == ''
+
+
+def test_r1_9_user_register():
+    '''
+    Testing R1-9: Postal code is empty at the time of registration.
+    '''
+
+    # If email test0@test.com, registered without a postal code, 
+    # still has an empty postal code, the condition is satisfied
+    user = login('test0@test.com', 'Legalpass!')
+    assert user.postal_code == ''
+
+
+def test_r1_10_user_register():
+    '''
+    Testing R1-10: Balance should be initialized as 100 at time of 
+    registration.
+    '''
+
+    # If email test0@test.com, registered without a balance, 
+    # is automatically loaded with 100 dollars, the condition is satisfied
+    user = login('test0@test.com', 'Legalpass!')
+    assert user.balance == 100.00
+
+
+# Users that have been inserted from register test cases:
+# - 'user', 'test0@test.com', 'Legalpass!'
+# - 'user', 'test1@test.com', 'Legalpass!'
+# - 'user 0', 'test2@test.com', 'Legalpass!'
 
 def test_r2_1_login():
     '''
@@ -109,7 +162,7 @@ def test_r2_1_login():
 
     user = login('test0@test.com', 'Legalpass!')
     assert user is not None
-    assert user.username == 'user0'
+    assert user.username == 'user'
 
     user = login('test0@test.com', 'Unusedpass!')
     assert user is None
