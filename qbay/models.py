@@ -199,8 +199,8 @@ def update(email, password, update_params):
        True if update succeeded otherwise False
     '''
     #check if user creds can be authed by db
-    valids = User.query.filter_by(email=email, password=password).first()
-    if len(valids) != 1:
+    user = User.query.filter_by(email=email, password=password).first()
+    if user == None:
         return False
     
     #validate the update parameters
@@ -216,11 +216,11 @@ def update(email, password, update_params):
 
     #update parameters
     if 'shipping_address' in update_params:
-        valids.shipping_address=update_params['shipping_address']
+        user.shipping_address=update_params['shipping_address']
     if 'postal_code' in update_params:
-        valids.postal_code=update_params['postal_code']
+        user.postal_code=update_params['postal_code']
     if 'username' in update_params:
-        valids.username=update_params['username']
+        user.username=update_params['username']
     db.commit()
 
     return True
