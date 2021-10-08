@@ -178,13 +178,21 @@ def test_r4_1_create_product():
     and spaces cannot appear as a prefix or a suffix.
     """
     # Not alphanumeric
-    assert create_product("notAlphanumeric$%^", "24 character description", 11.0, "test0@test.com") is False
+    assert create_product("notAlphanumeric$%^",
+                          "24 character description",
+                          11.0, "test0@test.com") is False
     # Illegal leading space
-    assert create_product(" leading space", "24 character description", 11.0, "test0@test.com") is False
+    assert create_product(" leading space",
+                          "24 character description",
+                          11.0, "test0@test.com") is False
     # Illegal trailing space
-    assert create_product("trailing space ", "24 character description", 11.0, "test0@test.com") is False
+    assert create_product("trailing space ",
+                          "24 character description",
+                          11.0, "test0@test.com") is False
     # Meets specifications
-    assert create_product("product 0", "24 character description", 11.0, "test0@test.com") is True
+    assert create_product("product 0",
+                          "24 character description",
+                          11.0, "test0@test.com") is True
 
 
 def test_r4_2_create_product():
@@ -192,10 +200,14 @@ def test_r4_2_create_product():
     Testing R4-2: The title of the product is no longer than 80 characters.
     """
     # Long string to test 80 char limit
-    over_80_chars = "veeeeeeerrrrryyyyyy looooooooooooooooooooooooooonnnnnnnnnnnnnnnnnng tiiiiiiittttle"
+    over_80_chars = """veeeeeeerrrrryyyyyy 
+                    looooooooooooooooooooooooooonnnnnnnnnnnnnnnnnng 
+                    tiiiiiiittttle"""
 
     # Too many chars
-    assert create_product(over_80_chars, "24 character description", 11.0, "test0@test.com") is False
+    assert create_product(over_80_chars,
+                          "24 character description",
+                          11.0, "test0@test.com") is False
 
 
 def test_r4_3_create_product():
@@ -209,9 +221,13 @@ def test_r4_3_create_product():
         over_two_thousand += "a"
 
     # Description too short
-    assert create_product("product 1", "desc under 20", 11.0, "test1@test.com") is False
+    assert create_product("product 1",
+                          "desc under 20", 11.0,
+                          "test1@test.com") is False
     # Description too long
-    assert create_product("product 1", over_two_thousand, 11.0, "test1@test.com") is False
+    assert create_product("product 1",
+                          over_two_thousand,
+                          11.0, "test1@test.com") is False
 
 
 def test_r4_4_create_product():
@@ -219,7 +235,9 @@ def test_r4_4_create_product():
     Testing R4-4: Description has to be longer than the product's title.
     """
     # Description is too short relative to title
-    assert create_product("title longer than description", "24 character description", 11.0, "test1@test.com") is False
+    assert create_product("title longer than description",
+                          "24 character description",
+                          11.0, "test1@test.com") is False
 
 
 def test_r4_5_create_product():
@@ -227,9 +245,13 @@ def test_r4_5_create_product():
     Testing R4-5: Price has to be in range [10, 10000].
     """
     # Product cost too low
-    assert create_product("product 1", "24 character description", 9.0, "test1@test.com") is False
+    assert create_product("product 1",
+                          "24 character description",
+                          9.0, "test1@test.com") is False
     # product cost too high
-    assert create_product("product 1", "24 character description", 10001.0, "test1@test.com") is False
+    assert create_product("product 1",
+                          "24 character description",
+                          10001.0, "test1@test.com") is False
 
 
 def test_r4_6_create_product():
@@ -237,13 +259,19 @@ def test_r4_6_create_product():
     Testing R4-6: last_modified_date must be after 2021-01-02 and before 2025-01-02.
     """
     # Disallowed date - too early
-    assert create_product("product 1", "24 character description", 11.0, "test1@test.com",
+    assert create_product("product 1",
+                          "24 character description",
+                          11.0, "test1@test.com",
                           datetime.date(2020, 9, 29)) is False
     # Disallowed date - too late
-    assert create_product("product 1", "24 character description", 11.0, "test1@test.com",
+    assert create_product("product 1",
+                          "24 character description",
+                          11.0, "test1@test.com",
                           datetime.date(2020, 9, 29)) is False
     # Date in appropriate range
-    assert create_product("product 1", "24 character description", 11.0, "test1@test.com",
+    assert create_product("product 1",
+                          "24 character description",
+                          11.0, "test1@test.com",
                           datetime.date(2022, 9, 29)) is True
 
 
@@ -252,7 +280,9 @@ def test_r4_7_create_product():
     Testing R4-7: The owner of the corresponding product must exist in the database.
     """
     # Seller email (notinDB@test.com) is not in the database
-    assert create_product("product 2", "24 character description", 11.0, "notinDB@test.com") is False
+    assert create_product("product 2",
+                          "24 character description",
+                          11.0, "notinDB@test.com") is False
 
 
 def test_r4_8_create_product():
@@ -260,7 +290,9 @@ def test_r4_8_create_product():
     Testing R4-8: A user cannot create products that have the same title.
     """
     # repeat existing product name ('product 0') for user with email 'test0@test.com'
-    assert create_product("product 0", "24 character description", 11.0, "test0@test.com") is False
+    assert create_product("product 0",
+                          "24 character description",
+                          11.0, "test0@test.com") is False
 
 
 # Products that have been inserted from create_product test cases:

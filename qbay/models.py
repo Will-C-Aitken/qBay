@@ -284,7 +284,11 @@ def update_user(email, username=None, shipping_address=None, postal_code=None):
 '''
 
 
-def create_product(title, description, price, seller_email, date=datetime.date.today()):
+def create_product(title,
+                   description,
+                   price,
+                   seller_email,
+                   date=datetime.date.today()):
     """
     Create a new product.
 
@@ -336,8 +340,8 @@ def create_product(title, description, price, seller_email, date=datetime.date.t
 
 def check_title(title):
     """
-    Verifies that the title is alphanumeric, lacks leading and trailing spaces, and is within the
-    specified length (<80 characters)
+    Verifies that the title is alphanumeric, lacks leading and trailing spaces,
+    and is within thespecified length (<80 characters)
 
     :param title: the title to be checked
     :return: True if title meets criteria, False otherwise
@@ -420,7 +424,7 @@ def check_uniqueness(title, seller_email):
     (so two *different* sellers could still have products with the same name)
 
     :param title: a product title
-    :param seller_email: the
+    :param seller_email: the seller's email
     :return: True if the title is novel (i.e., not already possessed by a product of the seller), or
     False otherwise
     """
