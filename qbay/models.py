@@ -436,8 +436,8 @@ def check_uniqueness(title, seller_email):
 
     :param title: a product title
     :param seller_email: the seller's email
-    :return: True if the title is not already possessed by a product of the seller,
-             or False otherwise
+    :return: True if the title is not already possessed by a product
+             of the seller, or False otherwise
     """
     already_exists = Product.query.filter_by(title=title,
                                              seller_email=seller_email).all()
