@@ -187,7 +187,8 @@ def test_r3_update_user():
     # R3-1
     result = update_user('test0@test.com', 'WRONGPASS', {'username': 'apache'})
     assert result is False
-    result = update_user('test0@test.com', 'Legalpass!', {'password': 'apache'})
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'password': 'apache'})
     assert result is False
 
     # R3-4
