@@ -524,14 +524,14 @@ def check_uniqueness(title, seller_email):
         return True
 
 
-def update_product(title, seller_email, update_params):
+def update_product(title, price, seller_email, update_params):
     '''
     Update a product's information
     Parameters:
         id (int):               product id
         title (string):         title of product
         description (string):   description of product
-        price (float):          price of product
+        price (float):          price of product (before update)
         last_modified_date (Date): most recent date modified
 
     Returns:
@@ -540,40 +540,44 @@ def update_product(title, seller_email, update_params):
 
     # Current time
     last_modified_date = datetime.date.today()
+
     # Search for current product to be updated
     current_product = (Product.query.filter_by
                        (title=title, seller_email=seller_email).first())
+    # Check if product exists
     if current_product is None:
-		return False
+        return False
 
     # ------ Validate that all attributes follow the requirements ----
-    # not all parameters can be updated
+    # Not all parameters can be updated
     allowed_params = {'description', 'title', 'price'}
     for param in update_params:
         if param not in allowed_params:
             return False    
+
     # Check that title format is correct
     if 'title' in update_params:
         if not check_title(update_params['title']):
             return False
 
-    # check that the description is of the correct length
+    # Check that the description is of the correct length
     if 'description' in update_params:
         if not check_description(update_params['description'], title):
             return False
 
     # Check that price is within the allowed
     # range and can only be increased.
-    # NOTE: currently outputs "NoneType" because
-    # there are no prices logged in the system.
     if 'price' in update_params:
-        if not (check_price(update_params['price'])) and \
-                (current_product.price <= update_params['price']):
+        if not check_price(update_params['price']):
+            return False
+        elif price > update_params['price']:
             return False
 
+    # Check if date is within the allowed range.
     if not check_date(last_modified_date):
-            return False
+        return False
 
+    # Check if seller's email follows requirements.
     if not check_seller(seller_email):
         return False
 
