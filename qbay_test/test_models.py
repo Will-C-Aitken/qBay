@@ -282,6 +282,10 @@ def test_r4_7_create_product():
     Testing R4-7: The owner of the corresponding product
     must exist in the database.
     """
+    # Empty seller email
+    assert create_product("product 2",
+                          "24 character description",
+                          11.0, "") is False
     # Seller email (notinDB@test.com) is not in the database
     assert create_product("product 2",
                           "24 character description",

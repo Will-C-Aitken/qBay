@@ -421,6 +421,8 @@ def check_seller(seller_email):
             False otherwise
     """
     existing_seller = User.query.filter_by(email=seller_email).all()
+    # Note that this rules out the possibility of an empty seller_email,
+    # as it is impossible to create a user with an empty/invalid email.
     if not existing_seller:
         return False
     else:
