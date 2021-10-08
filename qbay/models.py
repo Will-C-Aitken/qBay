@@ -522,3 +522,74 @@ def check_uniqueness(title, seller_email):
         return False
     else:
         return True
+
+
+def update_product(title, seller_email, update_params):
+    '''
+    Update a product's information
+    Parameters:
+        id (int):               product id
+        title (string):         title of product
+        description (string):   description of product
+        price (float):          price of product
+        last_modified_date (Date): most recent date modified
+
+    Returns:
+        True if product was updated successfully, otherwise False
+    '''
+
+    # Current time
+    last_modified_date = datetime.date.today()
+    # Search for current product to be updated
+    current_product = (Product.query.filter_by
+                       (title=title, seller_email=seller_email).first())
+    if current_product is None:
+		return False
+
+    # ------ Validate that all attributes follow the requirements ----
+    # not all parameters can be updated
+    allowed_params = {'description', 'title', 'price'}
+    for param in update_params:
+        if param not in allowed_params:
+            return False    
+    # Check that title format is correct
+    if 'title' in update_params:
+        if not check_title(update_params['title']):
+            return False
+
+    # check that the description is of the correct length
+    if 'description' in update_params:
+        if not check_description(update_params['description'], title):
+            return False
+
+    # Check that price is within the allowed
+    # range and can only be increased.
+    # NOTE: currently outputs "NoneType" because
+    # there are no prices logged in the system.
+    if 'price' in update_params:
+        if not (check_price(update_params['price'])) and \
+                (current_product.price <= update_params['price']):
+            return False
+
+    if not check_date(last_modified_date):
+            return False
+
+    if not check_seller(seller_email):
+        return False
+
+    # ---- Update attributes ----
+    if 'title' in update_params:
+        current_product.title = update_params['title']
+
+    if 'description' in update_params:
+        current_product.description = update_params['description']
+
+    if 'price' in update_params:
+        current_product.price = update_params['price']
+
+    current_product.last_modified_date = last_modified_date
+
+    # actually save the user object
+    db.session.commit()
+
+    return True

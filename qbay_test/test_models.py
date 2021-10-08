@@ -352,3 +352,108 @@ def test_r4_8_create_product():
 # - "product 0", "24 character description", 11.0, "test0@test.com"
 # - "product 1", "24 character description", 11.0, "test1@test.com",
 #   datetime.date(2022, 9, 29)
+
+
+
+def test_r5_1_update_product():
+    '''
+    Testing R5-1: Can update all attributes of the product except owner_email \
+        and last_modified_date.
+    NOTE: Seller_email cannot be updated and is not in "updated_params".
+    '''
+
+    # changing last_date_modified manually is false
+    updated_product = update_product(
+        'product 0',
+        'test0@test.com',
+        {'last_modified_date': (datetime.date(2021, 3, 4))})
+    assert updated_product is False
+
+
+def test_r5_2_update_product():
+    '''
+    Testing R5-2: Price can only be increased but cannot be decreased.
+    '''
+
+    # price of product did not change
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'price': 11.00})
+    assert updated_product is False
+
+    # updating price to $0.00 does not follow requirement R5-2
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'price': 0.00})
+    assert updated_product is False
+
+    # decreasing price to $10.00 does not follow requirement R5-2
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'price': 10.00})
+    assert updated_product is False
+
+    # increasing price of product to 13.00 is successful
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'price': 13.00})
+    assert updated_product is True
+
+
+def test_r5_3_update_product():
+    '''
+    Testing R5-3: last_modified_date should be updated when
+    the updated operation is successful.
+    '''
+
+    # if last_date_modified was updated successfully, then true
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'last_date_modified'})
+    assert updated_product is True
+
+
+def test_r5_4_update_product():
+    '''
+    Testing R5-4: When updating an attribute, one has to make sure
+    that it follows the same requirements as "create_product".
+    '''
+
+    # a title that is not alphanumeric-only is false
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'title': 'abcd123!@#'})
+    assert updated_product is False
+
+    # a title that is longer than 80 characters is false
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'title': 'serhfh diusfhiuo sdufyhdsiuyf '
+                                               'fudisyhfuidsy '
+                                               'fdssedfhgjdsuiafgrugf '
+                                               'udigphuiofsdghiuf'})
+    assert updated_product is False
+    # A description with a length of characters
+    # less than 20 (or larger than 2000) is false.
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'description': 'abcdefghijkl'})
+    assert updated_product is False
+
+    # A description with a length  less than its title is false.
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'description': 'hi'})
+    assert updated_product is False
+
+    # A price outside the range of [10, 10000] is false.
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'price': 1000000.00})
+    assert updated_product is False
+    # Last_modified_date is true if it is after
+    # 2021-01-02 and before 2025-01-02
+    updated_product = update_product('product 0',
+                                     'test0@test.com',
+                                     {'last_modified_date'})
+    assert updated_product is True
