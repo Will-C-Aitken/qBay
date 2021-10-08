@@ -22,7 +22,7 @@ class User(db.Model):
         username (string)
         password (string)
         shipping_address (string)
-        postal_code (string) stored in the format _#_#_# where _ denotes 
+        postal_code (string) stored in the format _#_#_# where _ denotes
          letters and # denotes numbers
         balance (float) account balance in CAD
     '''
@@ -32,10 +32,10 @@ class User(db.Model):
     # Consider implementing secure hashing. Not a requirement for now
     password = db.Column(db.String(120), nullable=False)
 
-    shipping_address = (db.String(200))
-    postal_code = (db.String(6))
+    shipping_address = db.Column(db.String(200), default='')
+    postal_code = db.Column(db.String(6), default='')
 
-    balance = db.Column(db.Float)
+    balance = db.Column(db.Float, default=100.00)
 
     # one-to-many relationship with product
     products = db.relationship('Product', backref='user', lazy=True)
@@ -57,11 +57,11 @@ class Product(db.Model):
 
     Attributes:
         id_num (integer) product identifier
-        title (string) 
-        description (text) 
+        title (string)
+        description (text)
         price (float) in CAD
         last_modified_date (datetime)
-        seller_email (string) 
+        seller_email (string)
     '''
 
     id_num = db.Column(db.Integer, primary_key=True)
@@ -69,10 +69,10 @@ class Product(db.Model):
     description = db.Column(db.Text, nullable=False)
 
     price = db.Column(db.Float, nullable=False)
-    last_modified_date = db.Column(db.DateTime, nullable=False) 
+    last_modified_date = db.Column(db.DateTime, nullable=False)
 
     # foreign key to user table
-    seller_email = db.Column(db.String(80), db.ForeignKey('user.email'), 
+    seller_email = db.Column(db.String(80), db.ForeignKey('user.email'),
                              nullable=False)
 
     # one-to-many relationship with transaction
@@ -95,8 +95,8 @@ class Transaction(db.Model):
 
     Attributes:
         id_num (integer) transaction identifier
-        buyer_email (string) 
-        product_id_num (integer) 
+        buyer_email (string)
+        product_id_num (integer)
         date (datetime) date of purchase
         price (float) in CAD
     '''
@@ -136,7 +136,7 @@ class Review(db.Model):
     seller_email = db.Column(db.String(80), db.ForeignKey('user.email'),
                              nullable=False)
 
-    rating = db.Column(db.Integer, nullable=False)     
+    rating = db.Column(db.Integer, nullable=False)
     feedback = db.Column(db.Text)
     date = db.Column(db.DateTime, default=datetime.datetime.now())
 
@@ -160,6 +160,22 @@ def register(name, email, password):
     Returns:
        True if registration succeeded otherwise False
     '''
+    # check that both username and password are not empty
+    if (not email) or (not password):
+        return False
+
+    # check that email format is correct
+    if not check_email(email):
+        return False
+
+    # check that password format is correct
+    if not check_pass(password):
+        return False
+
+    # check that username format is correct
+    if not check_username(name):
+        return False
+
     # check if the email has been used:
     existed = User.query.filter_by(email=email).all()
     if len(existed) > 0:
@@ -175,15 +191,104 @@ def register(name, email, password):
     return True
 
 
+def check_email(email):
+    '''
+    Verify that email conforms to RFC 5322 (with a few extra constraints,
+    each noted, for simplicity)
+
+    Parameters:
+        email (string):    user email
+
+    Returns:
+        True if the email is valid, otherwise False
+    '''
+
+    # assuming unquoted local part of address, refusing dots in any part of
+    # the local name, and refusing hyphens in the domain.
+    email_regex = (r'\b[A-Za-z0-9!#$&\'*+\-/=?^_`{|}~]{1,64}@'
+                   r'([A-Za-z0-9]+\.)+[A-Za-z0-9]+\b')
+
+    if re.fullmatch(email_regex, email):
+        return True
+    else:
+        return False
+
+
+def check_pass(password):
+    '''
+    Verify that password conforms to requirements, i.e. is at least 6
+    characters, at least one upper and one lower case letters, and at least one
+    special character (one of [@$!%*?&])
+
+    Parameters:
+        password (string):    user password
+
+    Returns:
+        True if the password is valid, otherwise False
+    '''
+
+    # r'(at least one lower case)(at least one upper case)(at least one
+    # special)total 6 or greater characters')
+    password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
+                      r'[a-zA-Z0-9@$!%*?&]{6,}$')
+
+    if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False
+
+
+def check_username(username):
+    '''
+    Verify that username conforms to requirements, i.e. is longer than 2
+    characters, less than 20 characters, alphanumeric-only, and neither
+    beginnning or ending in spaces
+
+    Parameters:
+        username (string):    user username
+
+    Returns:
+        True if the username is valid, otherwise False
+    '''
+
+    # not space regexes at beginning and end count as one character so only
+    # need 1-17 middle characters to be between (2, 20) exclusive
+    username_regex = r'[a-zA-Z0-9][a-zA-Z0-9 ]{1,17}[a-zA-Z0-9]'
+
+    if re.fullmatch(username_regex, username):
+        return True
+    else:
+        return False
+
+
 def check_address(addr):
-    #validates an address
-    return len(addr) > 0 and addr.isalnum()
+    '''
+    Verify that address conforms to requirements, i.e. alpha numeric
+    non-empty string
+    Parameters:
+        username (string):    user address
+
+    Returns:
+        True if the address is valid, otherwise False
+    '''
+    print(re.match(r'[0-9a-zA-Z\s]+$', addr))
+    return len(addr) > 0 and bool(re.match(r'[0-9a-zA-Z\s]+$', addr))
+
 
 def check_postal_code(ps_code):
-    #validates a postal code using regex
-    regex = '[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\s\d[ABCEGHJ-NPRSTV-Z]\d'
+    '''
+    Verify that postal code conforms to requirements, i.e. valid
+    Canadian postalcode
+    Parameters:
+        username (string):    user postal code
+
+    Returns:
+        True if the postal is valid, otherwise False
+    '''
+    regex = r'[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]'\
+            r'\s[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
     m = re.match(regex, ps_code)
-    return m != None
+    return m is not None
 
 
 def update(email, password, update_params):
@@ -198,30 +303,31 @@ def update(email, password, update_params):
     Returns:
        True if update succeeded otherwise False
     '''
-    #check if user creds can be authed by db
+    # check if user creds can be authed by db
     user = User.query.filter_by(email=email, password=password).first()
-    if user == None:
+    if user is None:
         return False
-    
-    #validate the update parameters
+
+    # validate the update parameters
     if 'shipping_address' in update_params:
         if not check_address(update_params['shipping_address']):
             return False
     if 'postal_code' in update_params:
-        if not check_postal_code(update_postal_code['postal_code']):
+        if not check_postal_code(update_params['postal_code']):
             return False
     if 'username' in update_params:
-        if not check_username(update_username['username']):
+        if not check_username(update_params['username']):
             return False
 
-    #update parameters
+    # update parameters
     if 'shipping_address' in update_params:
-        user.shipping_address=update_params['shipping_address']
+        user.shipping_address = update_params['shipping_address']
     if 'postal_code' in update_params:
-        user.postal_code=update_params['postal_code']
+        user.postal_code = update_params['postal_code']
     if 'username' in update_params:
-        user.username=update_params['username']
-    db.commit()
+        user.username = update_params['username']
+    # actually save the user object
+    db.session.commit()
 
     return True
 
@@ -241,3 +347,9 @@ def login(email, password):
     if len(valids) != 1:
         return None
     return valids[0]
+
+
+'''
+def update_user(email, username=None, shipping_address=None, postal_code=None):
+    return True if successful, and False otherwise
+'''
