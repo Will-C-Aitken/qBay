@@ -282,3 +282,173 @@ def login(email, password):
 def update_user(email, username=None, shipping_address=None, postal_code=None):
     return True if successful, and False otherwise
 '''
+
+
+def create_product(title,
+                   description,
+                   price,
+                   seller_email,
+                   date=datetime.date.today()):
+    """
+    Create a new product.
+
+    :param title: product's title
+    :param description: product's description
+    :param price: product's price
+    :param seller_email: email of seller
+    :param date: the date of creation (default is set to current time)
+    :return: True if product is successfully created, False otherwise
+    """
+    # Note that the date is included as a default parameter in the
+    # create_product function.This is useful for testing, but should
+    # not be available to users in the front-end (i.e. users should
+    # not be able to input the date when the product is created
+    # - it should be done automatically.
+
+    # Check that title format is correct
+    if not check_title(title):
+        return False
+
+    # check that the description is of the correct length
+    elif not check_description(description, title):
+        return False
+
+    # Check that price is within the allowed range
+    elif not check_price(price):
+        return False
+
+    # Check that date of creation is within the allowed range
+    elif not check_date(date):
+        return False
+
+    # check that seller_email is valid
+    elif not check_seller(seller_email):
+        return False
+
+    # Check that the product's title has not already been used
+    elif not check_uniqueness(title, seller_email):
+        return False
+
+    else:
+        # create a new Product
+        product = Product(title=title,
+                          description=description,
+                          price=price,
+                          last_modified_date=date,
+                          seller_email=seller_email)
+        # add product to the current database session
+        db.session.add(product)
+        # save product object
+        db.session.commit()
+        return True
+
+
+def check_title(title):
+    """
+    Verifies that the title is alphanumeric, lacks leading and trailing spaces,
+    and is within thespecified length (<80 characters)
+
+    :param title: the title to be checked
+    :return: True if title meets criteria, False otherwise
+    """
+    # iterate over string and return False if any character
+    # is neither alphanumeric nor a space
+    for char in title:
+        if (not char.isalnum()) and (not char.isspace()):
+            return False
+    # Could just use strip here, but I'm following the project
+    # guidelines as written
+    if title.startswith(" ") or title.endswith(" "):
+        return False
+    if len(title) > 80:
+        return False
+    return True
+
+
+def check_description(description, title):
+    """
+    Verifies that the description is within the specified bounds
+    (20 < x < 20000) and that the description is longer than the
+    inputted title.
+
+    :param description: product description
+    :param title: product title
+    :return: True if the description meets the requirements,
+             False otherwise
+    """
+    if len(description) < 20 or len(description) > 2000:
+        return False
+    elif len(description) <= len(title):
+        return False
+    else:
+        return True
+
+
+def check_price(price):
+    """
+    Verifies that the given price is within the specified
+    range (10 < x < 10000)
+
+    :param price: a product's price
+    :return: True if the price meets the requirements,
+             False otherwise
+    """
+    if price < 10 or price > 10000:
+        return False
+    else:
+        return True
+
+
+def check_date(date):
+    """
+    Verifies that the given date is within the allowed
+    range (2021-01-02 < x < 2025-01-02)
+
+    :param date: a date (when product was created or last changed)
+    :return: True if the date is within the allowed range,
+             False otherwise
+    """
+    too_early = datetime.date(2021, 1, 2)
+    too_late = datetime.date(2025, 1, 2)
+    if date <= too_early or date >= too_late:
+        return False
+    else:
+        return True
+
+
+def check_seller(seller_email):
+    """
+    Verifies that the given email is attached to a User
+    object in the database
+
+    :param seller_email: an email (of the product's seller)
+    :return: True if the email corresponds to an existing user,
+            False otherwise
+    """
+    existing_seller = User.query.filter_by(email=seller_email).all()
+    # Note that this rules out the possibility of an empty seller_email,
+    # as it is impossible to create a user with an empty/invalid email.
+    if not existing_seller:
+        return False
+    else:
+        return True
+
+
+def check_uniqueness(title, seller_email):
+    """
+    Verifies that the title is not already possessed by another
+    product belonging to the seller. We assume that this requirement applies
+    strictly to the products owned by the seller in question (so two
+    *different* sellers could still have products with the same name)
+
+    :param title: a product title
+    :param seller_email: the seller's email
+    :return: True if the title is not already possessed by a product
+             of the seller, or False otherwise
+    """
+    already_exists = Product.query.filter_by(title=title,
+                                             seller_email=seller_email).all()
+    if already_exists:
+        return False
+    else:
+        return True
