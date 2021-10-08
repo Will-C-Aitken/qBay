@@ -1,4 +1,4 @@
-from qbay.models import register, login, create_product
+from qbay.models import register, login, create_product, update_user
 import datetime
 
 
@@ -54,7 +54,7 @@ def test_r1_3_user_register():
                      '11111111111111@test'), 'Legalpass!') is False
 
 
-def test_r1_4_user_register():                    
+def test_r1_4_user_register():
     '''
     Testing R1-4: Password has to meet the required complexity: minimum length
     6, ar least one upper case, at least one lower case, and at least one
@@ -67,11 +67,11 @@ def test_r1_4_user_register():
     assert register('user0', 'test@test.com', 'legalpass!') is False
     # No lower case
     assert register('user0', 'test@test.com', 'LEGALPASS!') is False
-    # No special character 
+    # No special character
     assert register('user0', 'test@test.com', 'legalpass') is False
 
 
-def test_r1_5_user_register():                    
+def test_r1_5_user_register():
     '''
     Testing R1-5: User name has to be non-empty, alphanumeric-only, and space
     allowed only if it is not as the prefix or suffix
@@ -89,7 +89,7 @@ def test_r1_5_user_register():
     assert register('user 0', 'test2@test.com', 'Legalpass!') is True
 
 
-def test_r1_6_user_register():                    
+def test_r1_6_user_register():
     '''
     Testing R1-6: User name has to be longer than 2 characters and less than 20
     characters.
@@ -99,7 +99,7 @@ def test_r1_6_user_register():
     assert register('u0', 'test@test.com', 'Legalpass!') is False
 
     # too long
-    assert register('u1111111111111111111', 
+    assert register('u1111111111111111111',
                     'test@test.com', 'Legalpass!') is False
 
 
@@ -119,7 +119,7 @@ def test_r1_8_user_register():
     Testing R1-8: Shipping address is empty at the time of registration.
     '''
 
-    # If email test0@test.com, registered without a shipping address, 
+    # If email test0@test.com, registered without a shipping address,
     # still has an empty shipping address, the condition is satisfied
     user = login('test0@test.com', 'Legalpass!')
     assert user.shipping_address == ''
@@ -130,7 +130,7 @@ def test_r1_9_user_register():
     Testing R1-9: Postal code is empty at the time of registration.
     '''
 
-    # If email test0@test.com, registered without a postal code, 
+    # If email test0@test.com, registered without a postal code,
     # still has an empty postal code, the condition is satisfied
     user = login('test0@test.com', 'Legalpass!')
     assert user.postal_code == ''
@@ -138,11 +138,11 @@ def test_r1_9_user_register():
 
 def test_r1_10_user_register():
     '''
-    Testing R1-10: Balance should be initialized as 100 at time of 
+    Testing R1-10: Balance should be initialized as 100 at time of
     registration.
     '''
 
-    # If email test0@test.com, registered without a balance, 
+    # If email test0@test.com, registered without a balance,
     # is automatically loaded with 100 dollars, the condition is satisfied
     user = login('test0@test.com', 'Legalpass!')
     assert user.balance == 100.00
@@ -155,9 +155,9 @@ def test_r1_10_user_register():
 
 def test_r2_1_login():
     '''
-    Testing R2-1: A user can log in using her/his email address 
+    Testing R2-1: A user can log in using her/his email address
       and the password.
-    (will be tested after the previous test, so we already have user0, 
+    (will be tested after the previous test, so we already have user0,
       user1 in database)
     '''
 
@@ -169,9 +169,55 @@ def test_r2_1_login():
     assert user is None
 
 
+def test_r3_update_user():
+    '''
+    Testing:
+
+        R3-1: A user is only able to update his/her
+        user name, shipping_address, and postal_code.
+        R3-2: Shipping_address should be non-empty, alphanumeric-only,
+        and no special characters such as !.
+        R3-3: Postal code has to be a valid Canadian postal code.
+        R3-4: User name follows the requirements above.
+
+    (will be tested after the previous test, so we already have u0,
+      u1 in database)
+    '''
+
+    # R3-1
+    result = update_user('test0@test.com', 'WRONGPASS', {'username': 'apache'})
+    assert result is False
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'password': 'apache'})
+    assert result is False
+
+    # R3-4
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'username': 'apache'})
+    assert result is not False
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'username': ''})
+    assert result is False
+
+    # R3-3
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'postal_code': 'N2P 4M1'})
+    assert result is not False
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'postal_code': 'aaa 123'})
+    assert result is False
+
+    # R3-2
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'shipping_address': '123 fake st'})
+    assert result is not False
+    result = update_user('test0@test.com', 'Legalpass!',
+                         {'shipping_address': '123 fake st!'})
+    assert result is False
+
+
 # create_product tests also make use of the users created in register tests
 # ('test0@test.com', 'test1@test.com', 'test2@test.com')
-
 def test_r4_1_create_product():
     """
     Testing R4-1: The title of the product is alphanumeric-only,
@@ -201,8 +247,8 @@ def test_r4_2_create_product():
     characters.
     """
     # Long string to test 80 char limit
-    over_80_chars = """veeeeeeerrrrryyyyyy 
-                    looooooooooooooooooooooooooonnnnnnnnnnnnnnnnnng 
+    over_80_chars = """veeeeeeerrrrryyyyyy
+                    looooooooooooooooooooooooooonnnnnnnnnnnnnnnnnng
                     tiiiiiiittttle"""
 
     # Too many chars

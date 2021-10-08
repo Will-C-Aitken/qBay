@@ -22,7 +22,7 @@ class User(db.Model):
         username (string)
         password (string)
         shipping_address (string)
-        postal_code (string) stored in the format _#_#_# where _ denotes 
+        postal_code (string) stored in the format _#_#_# where _ denotes
          letters and # denotes numbers
         balance (float) account balance in CAD
     '''
@@ -57,11 +57,11 @@ class Product(db.Model):
 
     Attributes:
         id_num (integer) product identifier
-        title (string) 
-        description (text) 
+        title (string)
+        description (text)
         price (float) in CAD
         last_modified_date (datetime)
-        seller_email (string) 
+        seller_email (string)
     '''
 
     id_num = db.Column(db.Integer, primary_key=True)
@@ -69,10 +69,10 @@ class Product(db.Model):
     description = db.Column(db.Text, nullable=False)
 
     price = db.Column(db.Float, nullable=False)
-    last_modified_date = db.Column(db.DateTime, nullable=False) 
+    last_modified_date = db.Column(db.DateTime, nullable=False)
 
     # foreign key to user table
-    seller_email = db.Column(db.String(80), db.ForeignKey('user.email'), 
+    seller_email = db.Column(db.String(80), db.ForeignKey('user.email'),
                              nullable=False)
 
     # one-to-many relationship with transaction
@@ -95,8 +95,8 @@ class Transaction(db.Model):
 
     Attributes:
         id_num (integer) transaction identifier
-        buyer_email (string) 
-        product_id_num (integer) 
+        buyer_email (string)
+        product_id_num (integer)
         date (datetime) date of purchase
         price (float) in CAD
     '''
@@ -136,7 +136,7 @@ class Review(db.Model):
     seller_email = db.Column(db.String(80), db.ForeignKey('user.email'),
                              nullable=False)
 
-    rating = db.Column(db.Integer, nullable=False)     
+    rating = db.Column(db.Integer, nullable=False)
     feedback = db.Column(db.Text)
     date = db.Column(db.DateTime, default=datetime.datetime.now())
 
@@ -193,7 +193,7 @@ def register(name, email, password):
 
 def check_email(email):
     '''
-    Verify that email conforms to RFC 5322 (with a few extra constraints, 
+    Verify that email conforms to RFC 5322 (with a few extra constraints,
     each noted, for simplicity)
 
     Parameters:
@@ -202,7 +202,7 @@ def check_email(email):
     Returns:
         True if the email is valid, otherwise False
     '''
-    
+
     # assuming unquoted local part of address, refusing dots in any part of
     # the local name, and refusing hyphens in the domain.
     email_regex = (r'\b[A-Za-z0-9!#$&\'*+\-/=?^_`{|}~]{1,64}@'
@@ -226,7 +226,7 @@ def check_pass(password):
     Returns:
         True if the password is valid, otherwise False
     '''
-    
+
     # r'(at least one lower case)(at least one upper case)(at least one
     # special)total 6 or greater characters')
     password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
@@ -250,7 +250,7 @@ def check_username(username):
     Returns:
         True if the username is valid, otherwise False
     '''
-    
+
     # not space regexes at beginning and end count as one character so only
     # need 1-17 middle characters to be between (2, 20) exclusive
     username_regex = r'[a-zA-Z0-9][a-zA-Z0-9 ]{1,17}[a-zA-Z0-9]'
@@ -259,6 +259,82 @@ def check_username(username):
         return True
     else:
         return False
+
+
+def check_address(addr):
+    '''
+    Verify that address conforms to requirements, i.e. alpha numeric
+    non-empty string
+    Parameters:
+        username (string):    user address
+
+    Returns:
+        True if the address is valid, otherwise False
+    '''
+    return len(addr) > 0 and bool(re.match(r'[0-9a-zA-Z\s]+$', addr))
+
+
+def check_postal_code(ps_code):
+    '''
+    Verify that postal code conforms to requirements, i.e. valid
+    Canadian postalcode
+    Parameters:
+        username (string):    user postal code
+
+    Returns:
+        True if the postal is valid, otherwise False
+    '''
+    regex = r'[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]'\
+            r'\s[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
+    m = re.match(regex, ps_code)
+    return m is not None
+
+
+def update_user(email, password, update_params):
+    '''
+    Update a user
+
+    Parameters:
+        email (string):    user email
+        password (string): user password
+        update_params:   Hash table of entries to update
+
+    Returns:
+       True if update succeeded otherwise False
+    '''
+    # check if user creds can be authed by db
+    user = User.query.filter_by(email=email, password=password).first()
+    if user is None:
+        return False
+
+    # not all parameters can be updated
+    allowed_params = {'shipping_address', 'postal_code', 'username'}
+    for param in update_params:
+        if param not in allowed_params:
+            return False
+
+    # validate the update parameters
+    if 'shipping_address' in update_params:
+        if not check_address(update_params['shipping_address']):
+            return False
+    if 'postal_code' in update_params:
+        if not check_postal_code(update_params['postal_code']):
+            return False
+    if 'username' in update_params:
+        if not check_username(update_params['username']):
+            return False
+
+    # update parameters
+    if 'shipping_address' in update_params:
+        user.shipping_address = update_params['shipping_address']
+    if 'postal_code' in update_params:
+        user.postal_code = update_params['postal_code']
+    if 'username' in update_params:
+        user.username = update_params['username']
+    # actually save the user object
+    db.session.commit()
+
+    return True
 
 
 def login(email, password):
@@ -276,12 +352,6 @@ def login(email, password):
     if len(valids) != 1:
         return None
     return valids[0]
-
-
-'''
-def update_user(email, username=None, shipping_address=None, postal_code=None):
-    return True if successful, and False otherwise
-'''
 
 
 def create_product(title,
