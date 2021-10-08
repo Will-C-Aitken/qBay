@@ -299,9 +299,10 @@ def create_product(title,
     :param date: the date of creation (default is set to current time)
     :return: True if product is successfully created, False otherwise
     """
-    # Note that the date is included as a default parameter in the create_product function.
-    # This is useful for testing, but should not be available to users in the front-end
-    # (i.e. users should not be able to input the date when the product is created
+    # Note that the date is included as a default parameter in the
+    # create_product function.This is useful for testing, but should
+    # not be available to users in the front-end (i.e. users should
+    # not be able to input the date when the product is created
     # - it should be done automatically.
 
     # Check that title format is correct
