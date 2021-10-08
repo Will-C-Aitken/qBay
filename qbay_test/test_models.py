@@ -183,16 +183,25 @@ def test_r3_update():
       u1 in database)
     '''
 
+    # R3-1
+    result = update('test0@test.com', 'WRONGPASS', {'username': 'apache'})
+    assert result is False
+    result = update('test0@test.com', 'Legalpass!', {'password': 'apache'})
+    assert result is False
+
+    # R3-4
     result = update('test0@test.com', 'Legalpass!', {'username': 'apache'})
     assert result is not False
     result = update('test0@test.com', 'Legalpass!', {'username': ''})
     assert result is False
 
+    # R3-3
     result = update('test0@test.com', 'Legalpass!', {'postal_code': 'N2P 4M1'})
     assert result is not False
     result = update('test0@test.com', 'Legalpass!', {'postal_code': 'aaa 123'})
     assert result is False
 
+    # R3-2
     result = update('test0@test.com', 'Legalpass!',
                     {'shipping_address': '123 fake st'})
     assert result is not False

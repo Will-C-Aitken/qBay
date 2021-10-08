@@ -271,7 +271,6 @@ def check_address(addr):
     Returns:
         True if the address is valid, otherwise False
     '''
-    print(re.match(r'[0-9a-zA-Z\s]+$', addr))
     return len(addr) > 0 and bool(re.match(r'[0-9a-zA-Z\s]+$', addr))
 
 
@@ -307,6 +306,12 @@ def update(email, password, update_params):
     user = User.query.filter_by(email=email, password=password).first()
     if user is None:
         return False
+
+    # not all parameters can be updated
+    allowed_params = {'shipping_address', 'postal_code', 'username'}
+    for param in update_params:
+        if param not in allowed_params:
+            return False
 
     # validate the update parameters
     if 'shipping_address' in update_params:
