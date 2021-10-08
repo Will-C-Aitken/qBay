@@ -346,11 +346,13 @@ def check_title(title):
     :param title: the title to be checked
     :return: True if title meets criteria, False otherwise
     """
-    # iterate over string and return False if any character is neither alphanumeric nor a space
+    # iterate over string and return False if any character
+    # is neither alphanumeric nor a space
     for char in title:
         if (not char.isalnum()) and (not char.isspace()):
             return False
-    # Could just use strip here, but I'm following the project guidelines as written
+    # Could just use strip here, but I'm following the project
+    # guidelines as written
     if title.startswith(" ") or title.endswith(" "):
         return False
     if len(title) > 80:
@@ -360,12 +362,14 @@ def check_title(title):
 
 def check_description(description, title):
     """
-    Verifies that the description is within the specified bounds (20 < x < 20000)
-    and that the description is longer than the inputted title.
+    Verifies that the description is within the specified bounds
+    (20 < x < 20000) and that the description is longer than the
+    inputted title.
 
     :param description: product description
     :param title: product title
-    :return: True if the description meets the requirements, False otherwise
+    :return: True if the description meets the requirements,
+             False otherwise
     """
     if len(description) < 20 or len(description) > 2000:
         return False
@@ -377,10 +381,12 @@ def check_description(description, title):
 
 def check_price(price):
     """
-    Verifies that the given price is within the specified range (10 < x < 10000)
+    Verifies that the given price is within the specified
+    range (10 < x < 10000)
 
     :param price: a product's price
-    :return: True if the price meets the requirements, False otherwise
+    :return: True if the price meets the requirements,
+             False otherwise
     """
     if price < 10 or price > 10000:
         return False
@@ -390,10 +396,12 @@ def check_price(price):
 
 def check_date(date):
     """
-    Verifies that the given date is within the allowed range (2021-01-02 < x < 2025-01-02)
+    Verifies that the given date is within the allowed
+    range (2021-01-02 < x < 2025-01-02)
 
     :param date: a date (when product was created or last changed)
-    :return: True if the date is within the allowed range, False otherwise
+    :return: True if the date is within the allowed range,
+             False otherwise
     """
     too_early = datetime.date(2021, 1, 2)
     too_late = datetime.date(2025, 1, 2)
@@ -405,10 +413,12 @@ def check_date(date):
 
 def check_seller(seller_email):
     """
-    Verifies that the given email is attached to a User object in the database
+    Verifies that the given email is attached to a User
+    object in the database
 
     :param seller_email: an email (of the product's seller)
-    :return: True if the email corresponds to an existing user, False otherwise
+    :return: True if the email corresponds to an existing user,
+            False otherwise
     """
     existing_seller = User.query.filter_by(email=seller_email).all()
     if not existing_seller:
@@ -419,16 +429,18 @@ def check_seller(seller_email):
 
 def check_uniqueness(title, seller_email):
     """
-    Verifies that the title is not already possessed by another product belonging to the seller.
-    We assume that this requirement applies strictly to the products owned by the seller in question
-    (so two *different* sellers could still have products with the same name)
+    Verifies that the title is not already possessed by another
+    product belonging to the seller. We assume that this requirement applies
+    strictly to the products owned by the seller in question (so two
+    *different* sellers could still have products with the same name)
 
     :param title: a product title
     :param seller_email: the seller's email
-    :return: True if the title is novel (i.e., not already possessed by a product of the seller), or
-    False otherwise
+    :return: True if the title is not already possessed by a product of the seller,
+             or False otherwise
     """
-    already_exists = Product.query.filter_by(title=title, seller_email=seller_email).all()
+    already_exists = Product.query.filter_by(title=title,
+                                             seller_email=seller_email).all()
     if already_exists:
         return False
     else:
