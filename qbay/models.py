@@ -1,6 +1,7 @@
 from qbay import app
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import re
 
 '''
 This file defines data models and related business logics
@@ -31,10 +32,10 @@ class User(db.Model):
     # Consider implementing secure hashing. Not a requirement for now
     password = db.Column(db.String(120), nullable=False)
 
-    shipping_address = (db.String(200))
-    postal_code = (db.String(6))
+    shipping_address = db.Column(db.String(200), default='')
+    postal_code = db.Column(db.String(6), default='')
 
-    balance = db.Column(db.Float)
+    balance = db.Column(db.Float, default=100.00)
 
     # one-to-many relationship with product
     products = db.relationship('Product', backref='user', lazy=True)
@@ -159,6 +160,22 @@ def register(name, email, password):
     Returns:
        True if registration succeeded otherwise False
     '''
+    # check that both username and password are not empty
+    if (not email) or (not password):
+        return False
+
+    # check that email format is correct
+    if not check_email(email):
+        return False
+
+    # check that password format is correct
+    if not check_pass(password):
+        return False
+
+    # check that username format is correct
+    if not check_username(name):
+        return False
+
     # check if the email has been used:
     existed = User.query.filter_by(email=email).all()
     if len(existed) > 0:
@@ -172,6 +189,76 @@ def register(name, email, password):
     db.session.commit()
 
     return True
+
+
+def check_email(email):
+    '''
+    Verify that email conforms to RFC 5322 (with a few extra constraints, 
+    each noted, for simplicity)
+
+    Parameters:
+        email (string):    user email
+
+    Returns:
+        True if the email is valid, otherwise False
+    '''
+    
+    # assuming unquoted local part of address, refusing dots in any part of
+    # the local name, and refusing hyphens in the domain.
+    email_regex = (r'\b[A-Za-z0-9!#$&\'*+\-/=?^_`{|}~]{1,64}@'
+                   r'([A-Za-z0-9]+\.)+[A-Za-z0-9]+\b')
+
+    if re.fullmatch(email_regex, email):
+        return True
+    else:
+        return False
+
+
+def check_pass(password):
+    '''
+    Verify that password conforms to requirements, i.e. is at least 6
+    characters, at least one upper and one lower case letters, and at least one
+    special character (one of [@$!%*?&])
+
+    Parameters:
+        password (string):    user password
+
+    Returns:
+        True if the password is valid, otherwise False
+    '''
+    
+    # r'(at least one lower case)(at least one upper case)(at least one
+    # special)total 6 or greater characters')
+    password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
+                      r'[a-zA-Z0-9@$!%*?&]{6,}$')
+
+    if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False
+
+
+def check_username(username):
+    '''
+    Verify that username conforms to requirements, i.e. is longer than 2
+    characters, less than 20 characters, alphanumeric-only, and neither
+    beginnning or ending in spaces
+
+    Parameters:
+        username (string):    user username
+
+    Returns:
+        True if the username is valid, otherwise False
+    '''
+    
+    # not space regexes at beginning and end count as one character so only
+    # need 1-17 middle characters to be between (2, 20) exclusive
+    username_regex = r'[a-zA-Z0-9][a-zA-Z0-9 ]{1,17}[a-zA-Z0-9]'
+
+    if re.fullmatch(username_regex, username):
+        return True
+    else:
+        return False
 
 
 def login(email, password):
@@ -189,3 +276,9 @@ def login(email, password):
     if len(valids) != 1:
         return None
     return valids[0]
+
+
+'''
+def update_user(email, username=None, shipping_address=None, postal_code=None):
+    return True if successful, and False otherwise
+'''
