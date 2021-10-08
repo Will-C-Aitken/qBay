@@ -19,7 +19,7 @@ def test_r1_2_user_register():
     Testing R1-2: A user is uniquely identified by his/her email address.
     '''
 
-    # Being unable to add a new user with the same email ensures that all 
+    # Being unable to add a new user with the same email ensures that all
     # users are uniquely identified by their email
     assert register('user', 'test0@test.com', 'Legalpass!') is True
     assert register('user1', 'test0@test.com', 'Legalpass!') is False
@@ -171,6 +171,7 @@ def test_r2_1_login():
 # create_product tests also make use of the users created in register tests
 # ('test0@test.com', 'test1@test.com', 'test2@test.com')
 
+
 def test_r4_1_create_product():
     """
     Testing R4-1: The title of the product is alphanumeric-only,
@@ -192,8 +193,6 @@ def test_r4_2_create_product():
     """
     # Long string to test 80 char limit
     over_80_chars = "veeeeeeerrrrryyyyyy looooooooooooooooooooooooooonnnnnnnnnnnnnnnnnng tiiiiiiittttle"
-    # Long string just under 80 char limit
-    just_under_80 = "leeeeessssss looooooooooooooooooooooooooonnnnnnnnnnnnnnnnnng tiiiiiiittttle"
 
     # Too many chars
     assert create_product(over_80_chars, "24 character description", 11.0, "test0@test.com") is False
@@ -206,7 +205,7 @@ def test_r4_3_create_product():
     """
     # Generate description over 2000 chars for testing
     over_two_thousand = ""
-    for i in range (0,2001):
+    for i in range(0, 2001):
         over_two_thousand += "a"
 
     # Description too short
@@ -239,7 +238,7 @@ def test_r4_6_create_product():
     """
     # Disallowed date - too early
     assert create_product("product 1", "24 character description", 11.0, "test1@test.com",
-                          datetime.date(2020,9,29)) is False
+                          datetime.date(2020, 9, 29)) is False
     # Disallowed date - too late
     assert create_product("product 1", "24 character description", 11.0, "test1@test.com",
                           datetime.date(2020, 9, 29)) is False
