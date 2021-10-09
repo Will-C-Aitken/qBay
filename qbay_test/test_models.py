@@ -316,7 +316,7 @@ def test_r4_6_create_product():
     assert create_product("product 1",
                           "24 character description",
                           11.0, "test1@test.com",
-                          datetime.date(2020, 9, 29)) is False
+                          datetime.date(2030, 9, 29)) is False
     # Date in appropriate range
     assert create_product("product 1",
                           "24 character description",
@@ -386,30 +386,30 @@ def test_r5_2_update_product():
 
     # Price of product that did not change is True (no change to instance)
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'price': 11.00})
+                            11.00,
+                            'test0@test.com',
+                            {'price': 11.00})
     assert result is True
 
     # updating price to $0.00 does not follow requirement R5-2
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'price': 0.00})
+                            11.00,
+                            'test0@test.com',
+                            {'price': 0.00})
     assert result is False
 
     # decreasing price to $10.00 does not follow requirement R5-2
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'price': 10.00})
+                            11.00,
+                            'test0@test.com',
+                            {'price': 10.00})
     assert result is False
 
     # increasing price of product to 13.00 is successful
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'price': 13.00})
+                            11.00,
+                            'test0@test.com',
+                            {'price': 13.00})
     assert result is True
 
 
@@ -421,9 +421,8 @@ def test_r5_3_update_product():
 
     # if last_date_modified was updated successfully, then true
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'title': 'product 1'})
+                            'test0@test.com',
+                            {'title': 'product 1'})
     assert result is True
 
 
@@ -435,39 +434,39 @@ def test_r5_4_update_product():
 
     # a title that is not alphanumeric-only is false
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'title': 'abcd123!@#'})
+                            11.00,
+                            'test0@test.com',
+                            {'title': 'abcd123!@#'})
     assert result is False
 
     # a title that is longer than 80 characters is false
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'title': 'serhfh diusfhiuo sdufyhdsiuyf '
-                                               'fudisyhfuidsy '
-                                               'fdssedfhgjdsuiafgrugf '
-                                               'udigphuiofsdghiuf'})
+                            11.00,
+                            'test0@test.com',
+                            {'title': 'serhfh diusfhiuo sdufyhdsiuyf '
+                                      'fudisyhfuidsy '
+                                      'fdssedfhgjdsuiafgrugf '
+                                      'udigphuiofsdghiuf'})
     assert result is False
 
     # A description with a length of characters
     # less than 20 (or larger than 2000) is false.
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'description': 'abcdefghijkl'})
+                            11.00,
+                            'test0@test.com',
+                            {'description': 'abcdefghijkl'})
     assert result is False
 
     # A description with a length  less than its title is false.
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'description': 'hi'})
+                            11.00,
+                            'test0@test.com',
+                            {'description': 'hi'})
     assert result is False
 
     # A price outside the range of [10, 10000] is false.
     result = update_product('product 0',
-                                     11.00,
-                                     'test0@test.com',
-                                     {'price': 1000000.00})
+                            11.00,
+                            'test0@test.com',
+                            {'price': 1000000.00})
     assert result is False

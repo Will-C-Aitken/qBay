@@ -526,16 +526,16 @@ def check_uniqueness(title, seller_email):
 
 def update_product(title, price, seller_email, update_params):
     '''
-    Update a product's information
+    Update a product
+
     Parameters:
-        id (int):               product id
-        title (string):         title of product
-        description (string):   description of product
-        price (float):          price of product (before update)
-        last_modified_date (Date): most recent date modified
+        title (string):     product title
+        price (float):      product price
+        seller_email (string):  email of seller
+        update_params:   Hash table of entries to update
 
     Returns:
-        True if product was updated successfully, otherwise False
+       True if update succeeded otherwise False
     '''
 
     # Current time
