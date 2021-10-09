@@ -577,10 +577,6 @@ def update_product(title, price, seller_email, update_params):
     if not check_date(last_modified_date):
         return False
 
-    # Check if seller's email follows requirements.
-    if not check_seller(seller_email):
-        return False
-
     # ---- Update attributes ----
     if 'title' in update_params:
         current_product.title = update_params['title']
