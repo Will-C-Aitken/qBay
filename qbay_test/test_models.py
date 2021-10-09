@@ -421,6 +421,7 @@ def test_r5_3_update_product():
 
     # if last_date_modified was updated successfully, then true
     result = update_product('product 0',
+                            11.00,
                             'test0@test.com',
                             {'title': 'product 1'})
     assert result is True
