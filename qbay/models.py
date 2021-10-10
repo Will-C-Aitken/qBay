@@ -522,3 +522,74 @@ def check_uniqueness(title, seller_email):
         return False
     else:
         return True
+
+
+def update_product(title, price, seller_email, update_params):
+    '''
+    Update a product
+
+    Parameters:
+        title (string):     product title
+        price (float):      product price
+        seller_email (string):  email of seller
+        update_params:   Hash table of entries to update
+
+    Returns:
+       True if update succeeded otherwise False
+    '''
+
+    # Current time
+    last_modified_date = datetime.date.today()
+
+    # Search for current product to be updated
+    current_product = (Product.query.filter_by
+                       (title=title, seller_email=seller_email).first())
+    # Check if product exists
+    if current_product is None:
+        return False
+
+    # ------ Validate that all attributes follow the requirements ----
+    # Not all parameters can be updated
+    allowed_params = {'description', 'title', 'price'}
+    for param in update_params:
+        if param not in allowed_params:
+            return False    
+
+    # Check that title format is correct
+    if 'title' in update_params:
+        if not check_title(update_params['title']):
+            return False
+
+    # Check that the description is of the correct length
+    if 'description' in update_params:
+        if not check_description(update_params['description'], title):
+            return False
+
+    # Check that price is within the allowed
+    # range and can only be increased.
+    if 'price' in update_params:
+        if not check_price(update_params['price']):
+            return False
+        elif price > update_params['price']:
+            return False
+
+    # Check if date is within the allowed range.
+    if not check_date(last_modified_date):
+        return False
+
+    # ---- Update attributes ----
+    if 'title' in update_params:
+        current_product.title = update_params['title']
+
+    if 'description' in update_params:
+        current_product.description = update_params['description']
+
+    if 'price' in update_params:
+        current_product.price = update_params['price']
+
+    current_product.last_modified_date = last_modified_date
+
+    # actually save the user object
+    db.session.commit()
+
+    return True

@@ -1,4 +1,5 @@
-from qbay.models import register, login, create_product, update_user
+from qbay.models import register, login, \
+    create_product, update_user, update_product
 import datetime
 
 
@@ -315,7 +316,7 @@ def test_r4_6_create_product():
     assert create_product("product 1",
                           "24 character description",
                           11.0, "test1@test.com",
-                          datetime.date(2020, 9, 29)) is False
+                          datetime.date(2030, 9, 29)) is False
     # Date in appropriate range
     assert create_product("product 1",
                           "24 character description",
@@ -352,3 +353,121 @@ def test_r4_8_create_product():
 # - "product 0", "24 character description", 11.0, "test0@test.com"
 # - "product 1", "24 character description", 11.0, "test1@test.com",
 #   datetime.date(2022, 9, 29)
+
+
+def test_r5_1_update_product():
+    '''
+    Testing R5-1: Can update all attributes of the product except owner_email \
+        and last_modified_date.
+    NOTE: Seller_email cannot be updated and is not in "updated_params".
+    '''
+
+    # Changing last_date_modified manually is false - not possible
+    result = update_product(
+        'product 0',
+        11.00,
+        'test0@test.com',
+        {'last_modified_date': (datetime.date(2021, 3, 4))})
+    assert result is False
+
+    # Changing seller_email manually is false - not possible
+    result = update_product(
+        'product 0',
+        11.00,
+        'test0@test.com',
+        {'seller_email': 'test3@test.com'})
+    assert result is False
+
+
+def test_r5_2_update_product():
+    '''
+    Testing R5-2: Price can only be increased but cannot be decreased.
+    '''
+
+    # Price of product that did not change is True (no change to instance)
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'price': 11.00})
+    assert result is True
+
+    # updating price to $0.00 does not follow requirement R5-2
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'price': 0.00})
+    assert result is False
+
+    # decreasing price to $10.00 does not follow requirement R5-2
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'price': 10.00})
+    assert result is False
+
+    # increasing price of product to 13.00 is successful
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'price': 13.00})
+    assert result is True
+
+
+def test_r5_3_update_product():
+    '''
+    Testing R5-3: last_modified_date should be updated when
+    the updated operation is successful.
+    '''
+
+    # if last_date_modified was updated successfully, then true
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'title': 'product 1'})
+    assert result is True
+
+
+def test_r5_4_update_product():
+    '''
+    Testing R5-4: When updating an attribute, one has to make sure
+    that it follows the same requirements as "create_product".
+    '''
+
+    # a title that is not alphanumeric-only is false
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'title': 'abcd123!@#'})
+    assert result is False
+
+    # a title that is longer than 80 characters is false
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'title': 'serhfh diusfhiuo sdufyhdsiuyf '
+                                      'fudisyhfuidsy '
+                                      'fdssedfhgjdsuiafgrugf '
+                                      'udigphuiofsdghiuf'})
+    assert result is False
+
+    # A description with a length of characters
+    # less than 20 (or larger than 2000) is false.
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'description': 'abcdefghijkl'})
+    assert result is False
+
+    # A description with a length  less than its title is false.
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'description': 'hi'})
+    assert result is False
+
+    # A price outside the range of [10, 10000] is false.
+    result = update_product('product 0',
+                            11.00,
+                            'test0@test.com',
+                            {'price': 1000000.00})
+    assert result is False
