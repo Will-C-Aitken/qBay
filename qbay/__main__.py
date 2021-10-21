@@ -25,6 +25,7 @@ def main():
 
         # Quit
         elif selection == '3':
+            print("Exiting program")
             break
 
         else:
