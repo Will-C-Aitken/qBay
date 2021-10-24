@@ -1,7 +1,7 @@
 from qbay.models import login, register, update_product, Product
 
 
-def home_page(user_email):
+def home_page(user):
     """
     Home page user is greeted with after login
     """
@@ -25,7 +25,7 @@ def home_page(user_email):
 
         # Update product
         elif selection == '2':
-            update_product_page(user_email)
+            update_product_page(user)
             
         # Update profile
         elif selection == '3':
@@ -62,19 +62,86 @@ def create_product_page():
     return
 
 
-def update_product_page(user_email):
-    product_title = Product(seller_email=user_email).title
-    product_price = Product(seller_email=user_email).price
+def update_product_page(user):
+    '''
+    Product Update Page: User can update information from a
+                         previous product they have created.
 
-    new_title = input('Please enter new title: ')
-    new_description = input('Please enter new description: ')
-    new_price = input('Please enter new price: ')
-    update_params = {new_title, new_description, new_price}
+    Returns: Product is updated assuming that title, description
+             or price entered are correctly entered.
+    '''
 
-    if update_product(product_title, product_price, user_email, update_params):
-        print('Product successfully updated.')
+    # Find existing product
+    product = Product.query.filter_by(seller_email=user.email).first()
+
+    # Check if user's product exists
+    if product is not None:
+        product_title = product.title
+        product_price = product.price
     else:
-        print('Failed to update.')
+        print('Error - Product does not exist. You will '
+              'be taken back to the homepage.')
+        return
+
+    while True:
+
+        # Users can only update one parameter at a time.
+        # Can choose from options below to update information.
+        print()
+        print('Please choose from the following options:')
+        print('(1) Update title')
+        print('(2) Update description')
+        print('(3) Update price')
+        print('(4) Return to login page')
+        selection = input()
+        selection = selection.strip()
+
+        # Update title
+        if selection == '1':
+            new_title = input('Please enter new title: ').strip()
+            update_params = {'title': new_title}
+
+        # Update description
+        elif selection == '2':
+            new_description = input('Please enter new description: ').strip()
+            update_params = {'description': new_description}
+
+        # Update price
+        elif selection == '3':
+            new_price = input('Please enter new price: ').strip()
+            try:
+                new_price = float(new_price)
+            except ValueError:
+                print("Invalid price")
+                return
+            update_params = {'price': new_price}
+
+        # Return to login
+        elif selection == '4':
+            break
+
+        else:
+            print('Invalid option.')
+
+        if update_product(product_title, product_price,
+                          user.email, update_params):
+
+            if input('Product successfully updated. \n'
+                     'Press Y if you would like to update '
+                     'another product parameter, '
+                     'or press any key to continue '
+                     'to the homepage.').strip() == 'Y':
+                # Return to update product page
+                update_product_page(user)
+
+            else:
+                # Return to homepage
+                return
+
+        else:
+            # Return to homepage
+            print('Failed to update product.')
+            return
 
 
 def update_profile_page():
