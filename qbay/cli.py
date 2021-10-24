@@ -1,7 +1,7 @@
-from qbay.models import login, register
+from qbay.models import login, register, update_product, Product
 
 
-def home_page():
+def home_page(user_email):
     """
     Home page user is greeted with after login
     """
@@ -25,7 +25,7 @@ def home_page():
 
         # Update product
         elif selection == '2':
-            update_product_page()
+            update_product_page(user_email)
             
         # Update profile
         elif selection == '3':
@@ -57,12 +57,24 @@ def register_page():
         print('Registration failed')
 
 
+# based on user and current products, select product and update element(s)
 def create_product_page():
     return
 
 
-def update_product_page():
-    return
+def update_product_page(user_email):
+    product_title = Product(seller_email=user_email).title
+    product_price = Product(seller_email=user_email).price
+
+    new_title = input('Please enter new title: ')
+    new_description = input('Please enter new description: ')
+    new_price = input('Please enter new price: ')
+    update_params = {new_title, new_description, new_price}
+
+    if update_product(product_title, product_price, user_email, update_params):
+        print('Product successfully updated.')
+    else:
+        print('Failed to update.')
 
 
 def update_profile_page():
