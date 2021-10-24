@@ -1,9 +1,11 @@
-from qbay.models import login, register
+from qbay.models import login, register, create_product
 
 
-def home_page():
+def home_page(user):
     """
-    Home page user is greeted with after login
+    Home page user is greeted with after login. User object is passed
+    in as a parameter, so that the User's attributes and products can
+    be accessed for update/add operations.
     """
 
     while True:
@@ -21,15 +23,15 @@ def home_page():
 
         # Create product
         if selection == '1':
-            create_product_page()
+            create_product_page(user)
 
         # Update product
         elif selection == '2':
-            update_product_page()
+            update_product_page(user)
             
         # Update profile
         elif selection == '3':
-            update_profile_page()
+            update_profile_page(user)
             
         # Return to login
         elif selection == '4':
@@ -57,13 +59,40 @@ def register_page():
         print('Registration failed')
 
 
-def create_product_page():
+def create_product_page(user):
+    """
+    Product creation page, where a user can add a new sellable product
+    to their account.
+
+    :return: None, but a product will be created (assuming product
+    details are entered correctly)
+    """
+
+    print('''
+    You will now be prompted to enter information about your new product. 
+    Each product requires [1] a title (<80 alphanumeric characters), [2] 
+    a description (within 20-2000 characters), and [3] a price (within 
+    10-10,000 CAD). Furthermore, each new product's name must be unique.
+    ''')
+    title = input("Please enter product title: ").strip()
+    description = input("Please enter product's description: ").strip()
+    price = input("Please enter product's price: ").strip()
+    try:
+        price = float(price)
+    except ValueError:
+        print("Invalid price")
+        return
+    if create_product(title, description, price, user.email):
+        print("Product successfully created")
+        return
+    else:
+        print("Product creation failed")
+        return
+
+
+def update_product_page(user):
     return
 
 
-def update_product_page():
-    return
-
-
-def update_profile_page():
+def update_profile_page(user):
     return
