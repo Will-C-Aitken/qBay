@@ -72,7 +72,8 @@ def create_product_page(user):
     You will now be prompted to enter information about your new product. 
     Each product requires [1] a title (<80 alphanumeric characters), [2] 
     a description (within 20-2000 characters), and [3] a price (within 
-    10-10,000 CAD). Furthermore, each new product's name must be unique.
+    10-10,000 CAD). Each new product's title must be unique, and its 
+    description must be longer than the given title.
     ''')
     title = input("Please enter product title: ").strip()
     description = input("Please enter product's description: ").strip()
