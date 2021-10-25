@@ -1,6 +1,6 @@
 from qbay.models import login, register, create_product, \
-                        update_product, Product, \
-                        update_user
+    update_product, Product, \
+    update_user
 
 
 def home_page(user):
@@ -30,15 +30,15 @@ def home_page(user):
         # Update product
         elif selection == '2':
             update_product_page(user)
-            
+
         # Update profile
         elif selection == '3':
             update_profile_page(user)
-            
+
         # Return to login
         elif selection == '4':
             break
-            
+
         else:
             print('Invalid option')
 
@@ -155,10 +155,10 @@ def create_product_page(user):
     """
 
     print('''
-    You will now be prompted to enter information about your new product. 
-    Each product requires [1] a title (<80 alphanumeric characters), [2] 
-    a description (within 20-2000 characters), and [3] a price (within 
-    10-10,000 CAD). Each new product's title must be unique, and its 
+    You will now be prompted to enter information about your new product.
+    Each product requires [1] a title (<80 alphanumeric characters), [2]
+    a description (within 20-2000 characters), and [3] a price (within
+    10-10,000 CAD). Each new product's title must be unique, and its
     description must be longer than the given title.
     ''')
     title = input("Please enter product title: ").strip()
