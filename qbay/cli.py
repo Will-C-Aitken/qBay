@@ -69,9 +69,15 @@ def update_profile_page():
     email = input('Please input your email: ')
     password = input('Please input your epassowrd: ')
 
-    new_username = input('Please input your new username [blank for no updates]: ')
-    new_postal_code = input('Please input your new postal code [blank for no updates]: ')
-    new_shipping_address = input('Please input your new shipping address [blank for no updates]: ')
+    new_username = input('''
+        Please input your new username [blank for no updates]:
+    ''')
+    new_postal_code = input('''
+        Please input your new postal code [blank for no updates]:
+    ''')
+    new_shipping_address = input('''
+        Please input your new shipping address [blank for no updates]:
+    ''')
 
     updates = {}
     if len(new_username) > 0:
