@@ -72,16 +72,17 @@ def update_product_page(user):
     '''
 
     # Find existing product
-    product = Product.query.filter_by(seller_email=user.email).first()
+    product_title = input('Please input product title: ').strip()
+    product = Product.query.filter_by(seller_email=user.email,
+                                      title=product_title).first()
 
     # Check if user's product exists
-    if product is not None:
-        product_title = product.title
-        product_price = product.price
-    else:
+    if product is None:
         print('Error - Product does not exist. You will '
               'be taken back to the homepage.')
         return
+    else:
+        product_price = product.price
 
     while True:
 
