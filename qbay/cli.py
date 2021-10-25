@@ -66,4 +66,23 @@ def update_product_page():
 
 
 def update_profile_page():
+    email = input('Please input your email: ')
+    password = input('Please input your epassowrd: ')
+
+    new_username = input('Please input your new username [blank for no updates]: ')
+    new_postal_code = input('Please input your new postal code [blank for no updates]: ')
+    new_shipping_address = input('Please input your new shipping address [blank for no updates]: ')
+
+    updates = {}
+    if len(new_username) > 0:
+        updates['username'] = new_username
+    if len(new_postal_code) > 0:
+        updates['postal_code'] = new_postal_code
+    if len(new_shipping_aadress) > 0:
+        updates['shipping_aadress'] = new_shipping_aadress
+
+    if update_user(email, password, updates):
+        print('Update Suffessful!')
+    else:
+        print('Update Failed')
     return
