@@ -15,7 +15,7 @@ def main():
             user = login_page()
             if user:
                 print(f'Welcome {user.username}')
-                home_page()
+                home_page(user)
             else:
                 print('Login failed')
 
