@@ -457,13 +457,13 @@ def check_description(description, title):
 def check_price(price):
     """
     Verifies that the given price is within the specified
-    range (10 < x < 10000)
+    range (10.0 < x < 10000.0)
 
     :param price: a product's price
     :return: True if the price meets the requirements,
              False otherwise
     """
-    if price < 10 or price > 10000:
+    if price < 10.0 or price > 10000.0:
         return False
     else:
         return True
