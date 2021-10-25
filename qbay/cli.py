@@ -1,5 +1,6 @@
 from qbay.models import login, register, create_product, \
-                        update_product, Product
+    update_product, Product, \
+    update_user
 
 
 def home_page(user):
@@ -29,15 +30,15 @@ def home_page(user):
         # Update product
         elif selection == '2':
             update_product_page(user)
-            
+
         # Update profile
         elif selection == '3':
             update_profile_page(user)
-            
+
         # Return to login
         elif selection == '4':
             break
-            
+
         else:
             print('Invalid option')
 
@@ -154,10 +155,10 @@ def create_product_page(user):
     """
 
     print('''
-    You will now be prompted to enter information about your new product. 
-    Each product requires [1] a title (<80 alphanumeric characters), [2] 
-    a description (within 20-2000 characters), and [3] a price (within 
-    10-10,000 CAD). Each new product's title must be unique, and its 
+    You will now be prompted to enter information about your new product.
+    Each product requires [1] a title (<80 alphanumeric characters), [2]
+    a description (within 20-2000 characters), and [3] a price (within
+    10-10,000 CAD). Each new product's title must be unique, and its
     description must be longer than the given title.
     ''')
     title = input("Please enter product title: ").strip()
@@ -177,4 +178,26 @@ def create_product_page(user):
 
 
 def update_profile_page(user):
+    new_username = input('''
+        Please input your new username [blank for no updates]:
+    ''')
+    new_postal_code = input('''
+        Please input your new postal code [blank for no updates]:
+    ''')
+    new_shipping_address = input('''
+        Please input your new shipping address [blank for no updates]:
+    ''')
+
+    updates = {}
+    if len(new_username) > 0:
+        updates['username'] = new_username
+    if len(new_postal_code) > 0:
+        updates['postal_code'] = new_postal_code
+    if len(new_shipping_aadress) > 0:
+        updates['shipping_adress'] = new_shipping_adress
+
+    if update_user(user.email, user.password, updates):
+        print('Update Successful!')
+    else:
+        print('Update Failed')
     return
