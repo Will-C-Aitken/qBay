@@ -1,4 +1,4 @@
-from qbay.models import login, register
+from qbay.models import login, register, update_user
 
 
 def home_page():
@@ -65,10 +65,7 @@ def update_product_page():
     return
 
 
-def update_profile_page():
-    email = input('Please input your email: ')
-    password = input('Please input your epassowrd: ')
-
+def update_profile_page(user):
     new_username = input('''
         Please input your new username [blank for no updates]:
     ''')
@@ -85,10 +82,10 @@ def update_profile_page():
     if len(new_postal_code) > 0:
         updates['postal_code'] = new_postal_code
     if len(new_shipping_aadress) > 0:
-        updates['shipping_aadress'] = new_shipping_aadress
+        updates['shipping_adress'] = new_shipping_adress
 
-    if update_user(email, password, updates):
-        print('Update Suffessful!')
+    if update_user(user.email, user.password, updates):
+        print('Update Successful!')
     else:
         print('Update Failed')
     return
