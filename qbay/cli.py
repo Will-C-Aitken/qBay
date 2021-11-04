@@ -159,8 +159,8 @@ def create_product_page(user):
     Each product requires [1] a title (<80 alphanumeric characters), [2]
     a description (within 20-2000 characters), and [3] a price (within
     10-10,000 CAD). Each new product's title must be unique, and its
-    description must be longer than the given title.
-    ''')
+    description must be longer than the given title.\n''')
+
     title = input("Please enter product title: ").strip()
     description = input("Please enter product's description: ").strip()
     price = input("Please enter product's price: ").strip()
@@ -193,8 +193,8 @@ def update_profile_page(user):
         updates['username'] = new_username
     if len(new_postal_code) > 0:
         updates['postal_code'] = new_postal_code
-    if len(new_shipping_aadress) > 0:
-        updates['shipping_adress'] = new_shipping_adress
+    if len(new_shipping_address) > 0:
+        updates['shipping_address'] = new_shipping_address
 
     if update_user(user.email, user.password, updates):
         print('Update Successful!')
