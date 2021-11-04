@@ -24,6 +24,7 @@ def test_login():
         ['python', '-m', 'qbay'],
         stdin=expected_in,
         capture_output=True,
+        text=True
     ).stdout.decode()
 
     print('outputs', output)
