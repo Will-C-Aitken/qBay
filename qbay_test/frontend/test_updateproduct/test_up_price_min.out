@@ -1,0 +1,31 @@
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Please input email: Please input password: Please input the password again: Registration succeeded
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Please input email: Please input password: Welcome default name
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+    You will now be prompted to enter information about your new product.
+    Each product requires [1] a title (<80 alphanumeric characters), [2]
+    a description (within 20-2000 characters), and [3] a price (within
+    10-10,000 CAD). Each new product's title must be unique, and its
+    description must be longer than the given title.
+Please enter product title: Please enter product's description: Please enter product's price: Product successfully created
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+Please input product title:
+Please choose from the following options:
+(1) Update title
+(2) Update description
+(3) Update price
+(4) Return to login page
+Please enter new price: Product successfully updated.
+Press Y if you would like to update another product parameter, or press any key to continue to the homepage.

@@ -12,7 +12,7 @@ def pytest_sessionstart():
     Delete database file if existed. So testing can start fresh.
     '''
     print('Setting up environment..')
-    db_file = 'db.sqlite'
+    db_file = '/Users/alexa/Documents/cisc327-group2/db.sqlite'
     if os.path.exists(db_file):
         os.remove(db_file)
 
