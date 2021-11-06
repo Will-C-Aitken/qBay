@@ -51,11 +51,12 @@ def login_page():
 
 def register_page():
     email = input('Please input email: ')
+    user = input('Please input username: ')
     password = input('Please input password: ')
     password_twice = input('Please input the password again: ')
     if password != password_twice:
         print('Passwords entered are not the same')
-    elif register('default name', email, password):
+    elif register(user, email, password):
         print('Registration succeeded')
     else:
         print('Registration failed')
