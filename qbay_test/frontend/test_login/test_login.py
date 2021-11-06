@@ -25,7 +25,6 @@ def test_login():
         stdin=expected_in,
         capture_output=True,
         text=True
-    ).stdout.decode()
+    ).stdout
 
-    print('outputs', output)
     assert output.strip() == expected_out.strip()
