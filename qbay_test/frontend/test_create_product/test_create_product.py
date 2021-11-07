@@ -1,9 +1,40 @@
 # from os import popen
 from pathlib import Path
+from qbay.models import *
 import subprocess
 
 # Set the current folder
 current_folder = Path(__file__).parent
+
+# Creating a user object for frontend testing
+register("TestUser",
+         "create_product_test@qbay.com",
+         "Password99@")
+
+
+# Helper function called in each testing block
+def compare_input_output(input_file, output_file):
+    """
+    A function that compares the output generated from
+    running the qbay frontend (on a given an input file),
+    to the expected output found in a text file.
+    Parameters:
+        input_file (string):    file with expected input
+        output_file (string):   file with expected output
+    """
+    expected_in = open(current_folder.joinpath(
+        'input_output/' + input_file))
+    expected_out = open(current_folder.joinpath(
+        'input_output/' + output_file)).read()
+    # pip the input
+    output = subprocess.run(
+        ['python', '-m', 'qbay'],
+        stdin=expected_in,
+        capture_output=True,
+        text=True,
+    ).stdout
+    assert output.strip() == expected_out.strip()
+
 
 """
 This document contains front-end tests for the 
@@ -18,304 +49,146 @@ given legal values.
 """
 
 
-# -- PARTITION 1: TITLE ALPHANUM/NON-ALPHANUM --- #
+# ----- TEST 1: TITLE ALPHANUM/NON-ALPHANUM (R4-1) ------ #
 def test_cp_title_alphanumeric():
     """
-    Case A: Title is alphanumeric.
-    Expect successful product creation
+    There are two partitions:
+    Case 1: title is alphanumeric (expect
+            successful product creation)
+    Case 2: title is non-alphanumeric (expect
+            product creation to fail
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/title_alphanumeric.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/title_alphanumeric.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+    # list of input/output files used to test each partition
+    input_files = ['t1a_title_alphanumeric.in',
+                   't1b_title_not_alphanumeric.in']
+    output_files = ['product_creation_success.out',
+                    'product_creation_fail.out']
+    for i in range(0, 2):
+        compare_input_output(input_files[i], output_files[i])
 
 
-def test_cp_title_not_alphanumeric():
+# ----------- TEST 2: TITLE LENGTH (R4-2) ------------ #
+def test_cp_title_length():
     """
-    Case B: title is not alphanumeric
-    Expect product creation to fail
+    There are two partitions:
+    Case 1: title length <= 80 (expect
+            successful product creation)
+    Case 2: title length > 80 (expect
+            product creation to fail
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/title_not_alphanumeric.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/title_not_alphanumeric.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+    # list of input/output files used to test each partition
+    input_files = ['t2a_title_within_80.in',
+                   't2b_title_over_80.in']
+    output_files = ['product_creation_success.out',
+                    'product_creation_fail.out']
+    for i in range(0, 2):
+        compare_input_output(input_files[i], output_files[i])
 
 
-# ------ PARTITION 2: TITLE LENGTH ------- #
-def test_cp_title_within_80():
+# ------ PARTITION 3: DESCRIPTION LENGTH (R4-3) ------- #
+def test_cp_desc_length():
     """
-    Case A: title length is less than
-    (or equal to) 80 characters
-    Expect successful product creation
+    There are three partitions:
+    Case 1: description length < 20 (expect
+            product creation to fail)
+    Case 2: description length in bounds 20 <= x <= 2000
+            (expect successful product creation)
+    Case 3: description length > 2000 (expect
+            product creation to fail)
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/title_within_80.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/title_within_80.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+    # list of input/output files used to test each partition
+    input_files = ['t3a_desc_under_20.in',
+                   't3b_desc_within_20_2000.in',
+                   't3c_desc_over_2000.in']
+    output_files = ['product_creation_fail.out',
+                    'product_creation_success.out',
+                    'product_creation_fail.out']
+    for i in range(0, 3):
+        compare_input_output(input_files[i], output_files[i])
 
 
-def test_cp_title_over_80():
+# ---- TEST 4: DESCRIPTION LENGTH RELATIVE TO TITLE (R4-4) ---- #
+def test_cp_description_vs_title():
     """
-    Case B: title length is over 80
-    characters
-    Expect product creation to fail
+    There are two partitions:
+    Case 1: description longer than title (expect
+            product creation to fail
+    Case 2: description shorter than title (expect
+            successful product creation)
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/title_over_80.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/title_over_80.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+    # list of input/output files used to test each partition
+    input_files = ['t4a_desc_gt_title.in',
+                   't4b_desc_lt_title.in']
+    output_files = ['product_creation_success.out',
+                    'product_creation_fail.out']
+    for i in range(0, 2):
+        compare_input_output(input_files[i], output_files[i])
 
 
-# ------ PARTITION 3: DESCRIPTION LENGTH ------- #
-def test_cp_desc_under_20():
-    """
-    Case A: description under 20 characters
-    Expect product creation to fail
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/desc_under_20.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/desc_under_20.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-def test_cp_desc_within_20_2000():
-    """
-    Case B: Description within the accepted bounds:
-    20-2000
-    Expect successful product creation
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/desc_within_20_2000.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/desc_within_20_2000.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-def test_cp_desc_over_2000():
-    """
-    Case C: Description over 20000 Limit
-    Expect product creation to fail
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/desc_over_2000.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/desc_over_2000.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-# - PARTITION 4: DESCRIPTION LENGTH RELATIVE TO TITLE - #
-def test_cp_description_longer_than_title():
-    """
-    Case A: Description is longer than title
-    Expect successful product creation
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/desc_gt_title.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/desc_gt_title.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-def test_cp_description_shorter_than_title():
-    """
-    Case A: Description is shorter than title
-    Expect product creation to fail
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/desc_lt_title.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/desc_lt_title.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-# --------- PARTITION 5: PRICE --------- #
+# ----------------  TEST 5: PRICE (R4-5) ---------------- #
 def test_cp_price_under_10():
     """
-    Case A: Price under 10$ lower bound
-    Expect product creation to fail
+    There are 3 partitions:
+    Case 1: Price under 10$ lower bound (expect product
+            creation to fail)
+    Case 2: Price within 10-10000$ bound (expect successful
+            product creation)
+    Case 3: Price over 10000$ upper bound (expect product
+            creation to fail)
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/price_under_10.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/price_under_10.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+    # list of input/output files used to test each partition
+    input_files = ['t5a_price_under_10.in',
+                   't5b_price_within_10_10000.in',
+                   't5c_price_over_10000.in']
+    output_files = ['product_creation_fail.out',
+                    'product_creation_success.out',
+                    'product_creation_fail.out']
+    for i in range(0, 3):
+        compare_input_output(input_files[i], output_files[i])
 
 
-def test_cp_price_within_10_1000():
-    """
-    Case B: Price within 10-10000$ bound
-    Expect successful product creation
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/price_within_10_10000.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/price_within_10_10000.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-def test_cp_price_over_10000():
-    """
-    Case C: Price over 10000$ upper bound
-    Expect product creation to fail
-    """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/price_over_10000.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/price_over_10000.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
-
-
-# ------ PARTITION 6: PRODUCT IN/NOT IN DB  ------ #
+# -------- TEST 6: PRODUCT IN/NOT IN DB  (R4-8) -------- #
 def test_cp_product_is_duplicate():
     """
-    Case B: Product is  already in the database
-    Expect product creation to fail
+    There are 2 partitions:
+    Case 1: Product is  already in the database
+            (expect product creation to fail)
+    Case 2: Product is not already in the database
+            (expect successful product creation)
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/product_is_duplicate.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/product_is_duplicate.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+    # list of input/output files used to test each partition
+    input_files = ['t6a_product_is_duplicate.in',
+                   't6b_product_not_duplicate.in']
+    output_files = ['product_creation_fail.out',
+                    'product_creation_success.out']
+    for i in range(0, 2):
+        compare_input_output(input_files[i], output_files[i])
 
 
-def test_cp_product_not_duplicate():
+# Date field is not accessible to user, so we cannot partition
+# date input on the frontend. But we can verify that the
+# products created through the frontend are within accepted
+# range.
+
+# ------------ TEST 7: CHECK DATES  (R4-6) ------------ #
+def test_cp_date():
     """
-    Case B: Product is not already in the database
-    Expect successful product creation
+    Tests to see whether the products created through the
+    frontend all have dates within the allowed range
+    (2021.01.02 - 2025.01.02).
     """
-    # Fetch the expected input/output
-    expected_in = open(current_folder.joinpath(
-        'input_output/product_not_duplicate.in'))
-    expected_out = open(current_folder.joinpath(
-        'input_output/product_not_duplicate.out')).read()
-    # pip the input
-    output = subprocess.run(
-        ['python', '-m', 'qbay'],
-        stdin=expected_in,
-        capture_output=True,
-        text=True,
-    ).stdout
-    print('outputs', output)
-    assert output.strip() == expected_out.strip()
+
+
+# Product's "seller email" field is automatically set upon
+# creation, so we cannot partition it based on user input.
+# However, we can verify that the products created via
+# the frontend all have seller emails attached.
+
+# ------------ TEST 8: CHECK SELLER EMAIL  (R4-7) ------------ #
+def test_cp_user_exists():
+    """
+    Tests that the products created through the frontend
+    all have a seller email attribute.
+    """
+    all_products_in_db = Product.filter_by().all()
+
