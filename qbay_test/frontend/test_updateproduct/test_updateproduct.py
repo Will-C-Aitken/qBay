@@ -12,6 +12,10 @@ using the Black-Box Boundary Testing technique.
 
 The boundary tests below test extreme ends of each requirement 
 (e.g. minimum, middle/nominal value, maximum).
+
+NOTE: Requirements involving last_modified_date were not tested
+since date is not accessible from the front end.
+
 '''
 
 
