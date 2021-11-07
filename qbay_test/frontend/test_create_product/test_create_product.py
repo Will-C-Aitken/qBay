@@ -7,6 +7,7 @@ import subprocess
 current_folder = Path(__file__).parent
 
 # Creating a user object for frontend testing
+# of create product functionality
 register("TestUser",
          "create_product_test@qbay.com",
          "Password99@")
@@ -37,7 +38,7 @@ def compare_input_output(input_file, output_file):
 
 
 """
-This document contains front-end tests for the 
+The rest of this document contains front-end tests for the 
 create product function.
 
 What follows is a series of input partition black-box tests. 
@@ -177,6 +178,11 @@ def test_cp_date():
     frontend all have dates within the allowed range
     (2021.01.02 - 2025.01.02).
     """
+    all_products = Product.query.all()
+    for product in all_products:
+        assert datetime.datetime(2021, 1, 2) \
+               < product.last_modified_date \
+               < datetime.datetime(2025, 1, 2)
 
 
 # Product's "seller email" field is automatically set upon
@@ -190,5 +196,9 @@ def test_cp_user_exists():
     Tests that the products created through the frontend
     all have a seller email attribute.
     """
-    all_products_in_db = Product.filter_by().all()
+    all_products = Product.query.all()
+    for product in all_products:
+        assert User.query.filter_by(
+            email=product.seller_email).first() is not None
+
 
