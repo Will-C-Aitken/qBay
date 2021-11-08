@@ -15,10 +15,6 @@ def single_test(name):
 
     print(expected_out)
 
-
-    """capsys -- object created by pytest to 
-    capture stdout and stderr"""
-
     # pip the input
     output = subprocess.run(
         ['python', '-m', 'qbay'],
