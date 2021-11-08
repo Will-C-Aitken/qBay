@@ -6,16 +6,16 @@ import subprocess
 current_folder = Path(__file__).parent
 
 
-# read expected in/out
-expected_in = open(current_folder.joinpath(
-    'test_login.in'))
-expected_out = open(current_folder.joinpath(
-    'test_login.out')).read()
+def single_test(name):
+    # read expected in/out
+    expected_in = open(current_folder.joinpath(
+        '{}.in'.format(name)))
+    expected_out = open(current_folder.joinpath(
+        '{}.out'.format(name))).read()
 
-print(expected_out)
+    print(expected_out)
 
 
-def test_login():
     """capsys -- object created by pytest to 
     capture stdout and stderr"""
 
@@ -28,3 +28,8 @@ def test_login():
     ).stdout
 
     assert output.strip() == expected_out.strip()
+
+def test_all():
+    tests = {'test_login',}
+    for test in tests:
+        signle_test(test)
