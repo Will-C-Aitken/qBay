@@ -29,6 +29,7 @@ def single_test(name):
 
     assert output.strip() == expected_out.strip()
 
+
 def test_all():
     tests = {'test_login', }
     for test in tests:
