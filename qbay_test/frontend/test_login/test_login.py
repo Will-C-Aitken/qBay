@@ -29,4 +29,4 @@ def single_test(name):
 def test_all():
     tests = {'test_login', }
     for test in tests:
-        signle_test(test)
+        single_test(test)
