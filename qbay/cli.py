@@ -73,7 +73,7 @@ def update_product_page(user):
     '''
 
     # Find existing product
-    product_title = input('Please input product title: ').strip()
+    product_title = input('Please input product title:').strip()
     product = Product.query.filter_by(seller_email=user.email,
                                       title=product_title).first()
 
@@ -128,7 +128,7 @@ def update_product_page(user):
         if update_product(product_title, product_price,
                           user.email, update_params):
 
-            if input('Product successfully updated. \n'
+            if input('Product successfully updated.\n'
                      'Press Y if you would like to update '
                      'another product parameter, '
                      'or press any key to continue '
