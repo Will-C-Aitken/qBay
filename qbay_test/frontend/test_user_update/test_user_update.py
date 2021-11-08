@@ -16,8 +16,17 @@ print(expected_out)
 
 
 def test_login():
-    """capsys -- object created by pytest to 
-    capture stdout and stderr"""
+    """
+    The rest of this document contains front-end tests for
+    user profile updates.
+
+    A series of input partition black-box tests are implemented.
+    This single test contains all permutations for user updates.
+    This includes input partitions:
+        no changes
+        all 3 successfull changes
+        invalid changes for each parameter
+    """
 
     # pip the input
     output = subprocess.run(
