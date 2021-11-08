@@ -24,7 +24,7 @@ def test_login():
         ['python', '-m', 'qbay'],
         stdin=expected_in,
         capture_output=True,
-    ).stdout.decode()
+        text=True
+    ).stdout
 
-    print('outputs', output)
     assert output.strip() == expected_out.strip()
