@@ -1,5 +1,9 @@
 # Review_and_Retrospect
 
+Here you will find information about the file structure of our black box frontend tests.
+Frontend testing covered three different blackbox methods: (1) output partition, (2) input partition, 
+and (3) boundary testing.
+
 ## 1. Register User Tests (Output partition)
 Located in qbay_test/frontend/test_register/test_register.py
 
