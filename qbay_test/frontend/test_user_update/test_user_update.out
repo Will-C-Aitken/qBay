@@ -1,0 +1,90 @@
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Please input email: Please input username: Please input password: Please input the password again: Registration succeeded
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Please input email: Please input password: Welcome test
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+        Please input your new username [blank for no updates]:
+    
+        Please input your new postal code [blank for no updates]:
+    
+        Please input your new shipping address [blank for no updates]:
+    Update Successful!
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+        Please input your new username [blank for no updates]:
+    
+        Please input your new postal code [blank for no updates]:
+    
+        Please input your new shipping address [blank for no updates]:
+    Update Successful!
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+        Please input your new username [blank for no updates]:
+    
+        Please input your new postal code [blank for no updates]:
+    
+        Please input your new shipping address [blank for no updates]:
+    Update Successful!
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+        Please input your new username [blank for no updates]:
+    
+        Please input your new postal code [blank for no updates]:
+    
+        Please input your new shipping address [blank for no updates]:
+    Update Failed
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+        Please input your new username [blank for no updates]:
+    
+        Please input your new postal code [blank for no updates]:
+    
+        Please input your new shipping address [blank for no updates]:
+    Update Successful!
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+
+        Please input your new username [blank for no updates]:
+    
+        Please input your new postal code [blank for no updates]:
+    
+        Please input your new shipping address [blank for no updates]:
+    Update Failed
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Exiting program
