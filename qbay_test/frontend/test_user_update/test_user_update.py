@@ -21,6 +21,8 @@ def test_login():
     user profile updates.
 
     A series of input partition black-box tests are implemented.
+    Moreover, funcitionality and requirement partitioning are
+    also thoroughly used
     This single test contains all permutations for user updates.
     This includes input partitions:
         no changes
