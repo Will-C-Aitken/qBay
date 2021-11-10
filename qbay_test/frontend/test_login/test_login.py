@@ -9,8 +9,9 @@ current_folder = Path(__file__).parent
 def single_test(name):
     '''
     This implements a series of blackbox
-    tests for login functionality. Note that
-    there is an
+    tests for login functionality. This
+    includes through functionality coverage
+    and requirements partitioning.
     All cases are tested here, this includes
     but not limited to:
         login non-existant user
