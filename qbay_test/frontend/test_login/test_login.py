@@ -6,18 +6,28 @@ import subprocess
 current_folder = Path(__file__).parent
 
 
-# read expected in/out
-expected_in = open(current_folder.joinpath(
-    'test_login.in'))
-expected_out = open(current_folder.joinpath(
-    'test_login.out')).read()
+def single_test(name):
+    '''
+    This implements a series of blackbox
+    tests for login functionality. This
+    includes through functionality coverage
+    and requirements partitioning.
+    All cases are tested here, this includes
+    but not limited to:
+        login non-existant user
+        login failure for user
+        login logout login
+        login logout login fail
+        login logout login different user
+    '''
 
-print(expected_out)
+    # read expected in/out
+    expected_in = open(current_folder.joinpath(
+        '{}.in'.format(name)))
+    expected_out = open(current_folder.joinpath(
+        '{}.out'.format(name))).read()
 
-
-def test_login():
-    """capsys -- object created by pytest to 
-    capture stdout and stderr"""
+    print(expected_out)
 
     # pip the input
     output = subprocess.run(
@@ -28,3 +38,9 @@ def test_login():
     ).stdout
 
     assert output.strip() == expected_out.strip()
+
+
+def test_all():
+    tests = {'test_login', }
+    for test in tests:
+        single_test(test)
