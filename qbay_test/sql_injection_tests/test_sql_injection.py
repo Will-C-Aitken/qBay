@@ -14,7 +14,7 @@ def test_cp_title_sql_injection():
     error_causing_inputs = []
     for payload in all_payloads:
         payload = payload.strip()
-        legal_desc = "a"*(len(payload)+1)
+        legal_desc = "a" * (len(payload) + 1)
         try:
             create_product(payload,
                            legal_desc,
