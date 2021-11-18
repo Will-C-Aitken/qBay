@@ -59,3 +59,53 @@ def test_cp_user_email_sql_injection():
         product_num += 1
     assert not error_causing_inputs
 
+
+# Test username
+def test_register_username_sql_injection():
+    error_causing_inputs = []
+    user_num = 1
+    for payload in all_payloads:
+        payload = payload.strip()
+        try:
+            register(payload,
+                     "injection_test@qbay.com",
+                     "Password99@")
+        except Exception as e:
+            print("Error from username {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+        user_num += 1
+    assert not error_causing_inputs
+
+
+# Test email
+def test_register_email_sql_injection():
+    error_causing_inputs = []
+    user_num = 1
+    for payload in all_payloads:
+        payload = payload.strip()
+        try:
+            register("InjectionTestUser" + str(user_num),
+                     payload + "@qbay.com",
+                     "Password99@")
+        except Exception as e:
+            print("Error from email {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+        user_num += 1
+    assert not error_causing_inputs
+
+
+# Test password
+def test_register_password_sql_injection():
+    error_causing_inputs = []
+    user_num = 1
+    for payload in all_payloads:
+        payload = payload.strip()
+        try:
+            register("InjectionTestUser" + str(user_num),
+                     "injection_test@qbay.com",
+                     payload)
+        except Exception as e:
+            print("Error from password {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+        user_num += 1
+    assert not error_causing_inputs
