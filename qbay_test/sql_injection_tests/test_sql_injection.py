@@ -65,7 +65,6 @@ def test_register_username_sql_injection():
     error_causing_inputs = []
     user_num = 1
     for payload in all_payloads:
-        payload = payload.strip()
         try:
             register(payload,
                      "injection_test@qbay.com",
@@ -82,7 +81,6 @@ def test_register_email_sql_injection():
     error_causing_inputs = []
     user_num = 1
     for payload in all_payloads:
-        payload = payload.strip()
         try:
             register("InjectionTestUser" + str(user_num),
                      payload + "@qbay.com",
@@ -99,7 +97,6 @@ def test_register_password_sql_injection():
     error_causing_inputs = []
     user_num = 1
     for payload in all_payloads:
-        payload = payload.strip()
         try:
             register("InjectionTestUser" + str(user_num),
                      "injection_test@qbay.com",
