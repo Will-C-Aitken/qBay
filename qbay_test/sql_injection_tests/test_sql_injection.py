@@ -58,7 +58,7 @@ def test_cp_description_sql_injection():
             create_product.
     """
     error_causing_inputs = []
-    # product_num is used to create a unique title for each run of create_product
+    # product_num used to create a unique title for each run of create_product
     product_num = 1
     for payload in all_payloads:
         try:
@@ -85,7 +85,7 @@ def test_cp_seller_email_sql_injection():
             create_product.
     """
     error_causing_inputs = []
-    # product_num is used to create a unique title for each run of create_product
+    # product_num used to create a unique title for each run of create_product
     product_num = 1
     for payload in all_payloads:
         try:
