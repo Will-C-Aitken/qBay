@@ -100,3 +100,78 @@ def test_cp_seller_email_sql_injection():
         product_num += 1
     assert not error_causing_inputs
 
+
+def test_register_username_sql_injection():
+    """
+       A function that tests whether the username field of the register
+       function is vulnerable to SQL injection attacks. For each payload,
+       we run the register function with the payload as the username.
+       All other parameters are set to a legal value.
+
+       :raise: AssertionError if one or more payloads cause an error in
+               register.
+       """
+    error_causing_inputs = []
+    user_num = 1
+    for payload in all_payloads:
+        try:
+            register(payload,
+                     "injection_test" + str(user_num) + "@qbay.com",
+                     "Password99@")
+        except Exception as e:
+            print("Error from username {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+        user_num += 1
+    assert not error_causing_inputs
+
+
+def test_register_email_sql_injection():
+    """
+        A function that tests whether the email field of the register
+        function is vulnerable to SQL injection attacks. For each payload,
+        we run the register function with the payload as the email.
+        All other parameters are set to a legal value.
+
+        NOTE: Since assignment instructions say to run the function with
+        the payload as the parameter's value, we did not include the "@..."
+        portion of the email field below.
+
+        :raise: AssertionError if one or more payloads cause an error in
+                register.
+        """
+    error_causing_inputs = []
+    user_num = 1
+    for payload in all_payloads:
+        try:
+            register("InjectionTestUser" + str(user_num),
+                     payload,
+                     "Password99@")
+        except Exception as e:
+            print("Error from email {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+        user_num += 1
+    assert not error_causing_inputs
+
+
+def test_register_password_sql_injection():
+    """
+        A function that tests whether the password field of the register
+        function is vulnerable to SQL injection attacks. For each payload,
+        we run the register function with the payload as the password.
+        All other parameters are set to a legal value.
+
+        :raise: AssertionError if one or more payloads cause an error in
+                register.
+        """
+    error_causing_inputs = []
+    user_num = 1
+    for payload in all_payloads:
+        try:
+            register("InjectionTestUser" + str(user_num),
+                     "injection_test" + str(user_num) + "@qbay.com",
+                     payload)
+        except Exception as e:
+            print("Error from password {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+        user_num += 1
+    assert not error_causing_inputs
