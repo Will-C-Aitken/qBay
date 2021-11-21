@@ -104,9 +104,9 @@ def test_cp_seller_email_sql_injection():
 def test_register_username_sql_injection():
     """
        A function that tests whether the username field of the register
-       function is vulnerable to SQL injection attacks. For each payload, we run
-       the register function with the payload as the username. All other
-       parameters are set to a legal value.
+       function is vulnerable to SQL injection attacks. For each payload,
+       we run the register function with the payload as the username.
+       All other parameters are set to a legal value.
 
        :raise: AssertionError if one or more payloads cause an error in
                register.
@@ -128,9 +128,9 @@ def test_register_username_sql_injection():
 def test_register_email_sql_injection():
     """
         A function that tests whether the email field of the register
-        function is vulnerable to SQL injection attacks. For each payload, we run
-        the register function with the payload as the email. All other
-        parameters are set to a legal value.
+        function is vulnerable to SQL injection attacks. For each payload,
+        we run the register function with the payload as the email.
+        All other parameters are set to a legal value.
 
         NOTE: Since assignment instructions say to run the function with
         the payload as the parameter's value, we did not include the "@..."
@@ -156,9 +156,9 @@ def test_register_email_sql_injection():
 def test_register_password_sql_injection():
     """
         A function that tests whether the password field of the register
-        function is vulnerable to SQL injection attacks. For each payload, we run
-        the register function with the payload as the password. All other
-        parameters are set to a legal value.
+        function is vulnerable to SQL injection attacks. For each payload,
+        we run the register function with the payload as the password.
+        All other parameters are set to a legal value.
 
         :raise: AssertionError if one or more payloads cause an error in
                 register.
