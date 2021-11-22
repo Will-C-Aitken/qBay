@@ -15,5 +15,6 @@ build/
 
 .DS_Store
 *.sqlite
+mysql_data
 
 .idea/*
