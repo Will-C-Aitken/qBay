@@ -1,7 +1,7 @@
 version: "2"
 services:
   qbay-cli:
-    image: cisc327group2/qbay:version_info
+    image: cisc327group2/qbay:v1
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     depends_on:
@@ -17,7 +17,7 @@ services:
   qbay-db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: $SWvbknoS*8#&VDcs^Bi
+      MYSQL_ROOT_PASSWORD: root
     command: --init-file /data/application/init.sql
     volumes:
       - ./mysql_data:/var/lib/mysql
