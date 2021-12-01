@@ -27,8 +27,6 @@ def single_test(name):
     expected_out = open(current_folder.joinpath(
         '{}.out'.format(name))).read()
 
-    print(expected_out)
-
     # pip the input
     output = subprocess.run(
         ['python', '-m', 'qbay'],
