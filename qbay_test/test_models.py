@@ -475,13 +475,14 @@ def test_r5_4_update_product():
 
 def test_r6_1_order():
     '''
-    Testing R6-1: A user can place an order on the products
+    Testing R6-1: A user can place an order
+    on the products
     '''
 
     # login two users
     user0 = login('test0@test.com', 'Legalpass!')
     user1 = login('test1@test.com', 'Legalpass!')
-    
+
     # create a new product for user 0
     result = create_product("trans product",
                             "24 character description",
@@ -496,3 +497,56 @@ def test_r6_1_order():
     assert result is True
     assert user0.balance == user0_old_balance + 12.0
     assert user1.balance == user1_old_balance - 12.0
+
+
+def test_r6_2_order():
+    '''
+    Testing R6-2: A user cannot place an order
+    for his/her products
+    '''
+
+    # login two users
+    user0 = login('test0@test.com', 'Legalpass!')  # seller
+
+    # create a new product for user 0
+    result = create_product("my product",
+                            "24 character description",
+                            12.0, "test0@test.com")
+    assert result is True
+
+    user0_old_balance = user0.balance
+
+    # have user 0 buy their own product
+    result = order("my product", "test0@test.com", "test0@test.com")
+    assert result is False
+    assert user0.balance == user0_old_balance
+
+
+def test_r6_3_order():
+    '''
+    Testing R6-3: A user cannot place an order
+    that costs more than his/her balance
+    '''
+
+    # login two users
+    user0 = login('test0@test.com', 'Legalpass!')  # seller
+    user1 = login('test1@test.com', 'Legalpass!')  # buyer
+
+    # create a new product for user 0,
+    # where price is greater than user1's balance
+    result = create_product("high cost product",
+                            "24 character description",
+                            100.0, "test0@test.com")
+    assert result is True
+
+    user0_old_balance = user0.balance
+    user1_old_balance = user1.balance
+
+    # user 1 buys that product and returns False -
+    # price is greater than their balance
+    result = order("high cost product", "test0@test.com", "test1@test.com")
+    assert result is False
+    assert user0.balance == user0_old_balance
+    assert user1.balance == user1_old_balance
+
+
