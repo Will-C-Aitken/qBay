@@ -191,105 +191,6 @@ def register(name, email, password):
     return True
 
 
-def check_email(email):
-    '''
-    Verify that email conforms to RFC 5322 (with a few extra constraints,
-    each noted, for simplicity)
-
-    Parameters:
-        email (string):    user email
-
-    Returns:
-        True if the email is valid, otherwise False
-    '''
-
-    # assuming unquoted local part of address, refusing dots in any part of
-    # the local name, and refusing hyphens in the domain.
-    email_regex = (r'\b[A-Za-z0-9!#$&\'*+\-/=?^_`{|}~]{1,64}@'
-                   r'([A-Za-z0-9]+\.)+[A-Za-z0-9]+\b')
-
-    if re.fullmatch(email_regex, email):
-        return True
-    else:
-        return False
-
-
-def check_pass(password):
-    '''
-    Verify that password conforms to requirements, i.e. is at least 6
-    characters, at least one upper and one lower case letters, and at least one
-    special character (one of [@$!%*?&])
-
-    Parameters:
-        password (string):    user password
-
-    Returns:
-        True if the password is valid, otherwise False
-    '''
-
-    # r'(at least one lower case)(at least one upper case)(at least one
-    # special)total 6 or greater characters')
-    password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
-                      r'[a-zA-Z0-9@$!%*?&]{6,}$')
-
-    if re.fullmatch(password_regex, password):
-        return True
-    else:
-        return False
-
-
-def check_username(username):
-    '''
-    Verify that username conforms to requirements, i.e. is longer than 2
-    characters, less than 20 characters, alphanumeric-only, and neither
-    beginnning or ending in spaces
-
-    Parameters:
-        username (string):    user username
-
-    Returns:
-        True if the username is valid, otherwise False
-    '''
-
-    # not space regexes at beginning and end count as one character so only
-    # need 1-17 middle characters to be between (2, 20) exclusive
-    username_regex = r'[a-zA-Z0-9][a-zA-Z0-9 ]{1,17}[a-zA-Z0-9]'
-
-    if re.fullmatch(username_regex, username):
-        return True
-    else:
-        return False
-
-
-def check_address(addr):
-    '''
-    Verify that address conforms to requirements, i.e. alpha numeric
-    non-empty string
-    Parameters:
-        username (string):    user address
-
-    Returns:
-        True if the address is valid, otherwise False
-    '''
-    return len(addr) > 0 and bool(re.match(r'[0-9a-zA-Z\s]+$', addr))
-
-
-def check_postal_code(ps_code):
-    '''
-    Verify that postal code conforms to requirements, i.e. valid
-    Canadian postalcode
-    Parameters:
-        username (string):    user postal code
-
-    Returns:
-        True if the postal is valid, otherwise False
-    '''
-    regex = r'[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]'\
-            r'\s[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
-    m = re.match(regex, ps_code)
-    return m is not None
-
-
 def update_user(email, password, update_params):
     '''
     Update a user
@@ -413,6 +314,237 @@ def create_product(title,
         return True
 
 
+def update_product(title, price, seller_email, update_params):
+    '''
+    Update a product
+
+    Parameters:
+        title (string):     product title
+        price (float):      product price
+        seller_email (string):  email of seller
+        update_params:   Hash table of entries to update
+
+    Returns:
+       True if update succeeded otherwise False
+    '''
+
+    # Current time
+    last_modified_date = datetime.date.today()
+
+    # Search for current product to be updated
+    current_product = (Product.query.filter_by
+                       (title=title, seller_email=seller_email).first())
+    # Check if product exists
+    if current_product is None:
+        return False
+
+    # ------ Validate that all attributes follow the requirements ----
+    # Not all parameters can be updated
+    allowed_params = {'description', 'title', 'price'}
+    for param in update_params:
+        if param not in allowed_params:
+            return False    
+
+    # Check that title format is correct
+    if 'title' in update_params:
+        if not check_title(update_params['title']):
+            return False
+
+    # Check that the description is of the correct length
+    if 'description' in update_params:
+        if not check_description(update_params['description'], title):
+            return False
+
+    # Check that price is within the allowed
+    # range and can only be increased.
+    if 'price' in update_params:
+        if not check_price(update_params['price']):
+            return False
+        elif price > update_params['price']:
+            return False
+
+    # Check if date is within the allowed range.
+    if not check_date(last_modified_date):
+        return False
+
+    # ---- Update attributes ----
+    if 'title' in update_params:
+        current_product.title = update_params['title']
+
+    if 'description' in update_params:
+        current_product.description = update_params['description']
+
+    if 'price' in update_params:
+        current_product.price = update_params['price']
+
+    current_product.last_modified_date = last_modified_date
+
+    # actually save the user object
+    db.session.commit()
+
+    return True
+
+
+def order(prod_title, seller_email, buyer_email, date=datetime.date.today()):
+    '''
+    Order an available product. Products that have already been purchased will
+    not appear when available products are listed for a user.
+
+    Parameters:
+        prod_title (string):           the products title
+        seller_email (string):         the sellers email
+        buyer_email (string):          the buyers email
+        date (datetime) default - now: time of order
+
+    Returns:
+       True if order placement succeeded otherwise False
+    '''
+
+    # get product they want to order
+    product = Product.query.filter_by(title=prod_title, 
+                                      seller_email=seller_email).first()
+
+    # Check if product exists
+    if product is None:
+        return False
+
+    # get buyers email, they will aready be logged in so no need to check that
+    # they exist
+    buyer = User.query.filter_by(email=buyer_email).first()
+
+    # ensure user does not by own product
+    if buyer.email == product.seller_email:
+        return False
+
+    # ensure buyer has sufficient funds
+    if buyer.balance < product.price:
+        return False
+
+    # Check that date of orider is within the allowed range. Used same range as
+    # product creation
+    if not check_date(date):
+        return False
+
+    # Create transaction
+    trans = Transaction(buyer_email=buyer.email, 
+                        product_id_num=product.id_num,
+                        date=date, price=product.price)
+
+    db.session.add(trans)
+
+    # Update balances
+    new_buyer_balance = buyer.balance - product.price
+    buyer.balance = new_buyer_balance
+
+    seller = User.query.filter_by(email=product.seller_email).first()
+    new_seller_balance = seller.balance + product.price
+    seller.balance = new_seller_balance
+
+    # commit all chances to db
+    db.session.commit()
+
+    return True
+
+
+def check_email(email):
+    '''
+    Verify that email conforms to RFC 5322 (with a few extra constraints,
+    each noted, for simplicity)
+
+    Parameters:
+        email (string):    user email
+
+    Returns:
+        True if the email is valid, otherwise False
+    '''
+
+    # assuming unquoted local part of address, refusing dots in any part of
+    # the local name, and refusing hyphens in the domain.
+    email_regex = (r'\b[A-Za-z0-9!#$&\'*+\-/=?^_`{|}~]{1,64}@'
+                   r'([A-Za-z0-9]+\.)+[A-Za-z0-9]+\b')
+
+    if re.fullmatch(email_regex, email):
+        return True
+    else:
+        return False
+
+
+def check_pass(password):
+    '''
+    Verify that password conforms to requirements, i.e. is at least 6
+    characters, at least one upper and one lower case letters, and at least one
+    special character (one of [@$!%*?&])
+
+    Parameters:
+        password (string):    user password
+
+    Returns:
+        True if the password is valid, otherwise False
+    '''
+
+    # r'(at least one lower case)(at least one upper case)(at least one
+    # special)total 6 or greater characters')
+    password_regex = (r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])'
+                      r'[a-zA-Z0-9@$!%*?&]{6,}$')
+
+    if re.fullmatch(password_regex, password):
+        return True
+    else:
+        return False
+
+
+def check_username(username):
+    '''
+    Verify that username conforms to requirements, i.e. is longer than 2
+    characters, less than 20 characters, alphanumeric-only, and neither
+    beginnning or ending in spaces
+
+    Parameters:
+        username (string):    user username
+
+    Returns:
+        True if the username is valid, otherwise False
+    '''
+
+    # not space regexes at beginning and end count as one character so only
+    # need 1-17 middle characters to be between (2, 20) exclusive
+    username_regex = r'[a-zA-Z0-9][a-zA-Z0-9 ]{1,17}[a-zA-Z0-9]'
+
+    if re.fullmatch(username_regex, username):
+        return True
+    else:
+        return False
+
+
+def check_address(addr):
+    '''
+    Verify that address conforms to requirements, i.e. alpha numeric
+    non-empty string
+    Parameters:
+        username (string):    user address
+
+    Returns:
+        True if the address is valid, otherwise False
+    '''
+    return len(addr) > 0 and bool(re.match(r'[0-9a-zA-Z\s]+$', addr))
+
+
+def check_postal_code(ps_code):
+    '''
+    Verify that postal code conforms to requirements, i.e. valid
+    Canadian postalcode
+    Parameters:
+        username (string):    user postal code
+
+    Returns:
+        True if the postal is valid, otherwise False
+    '''
+    regex = r'[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]'\
+            r'\s[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
+    m = re.match(regex, ps_code)
+    return m is not None
+
+
 def check_title(title):
     """
     Verifies that the title is alphanumeric, lacks leading and trailing spaces,
@@ -523,73 +655,3 @@ def check_uniqueness(title, seller_email):
     else:
         return True
 
-
-def update_product(title, price, seller_email, update_params):
-    '''
-    Update a product
-
-    Parameters:
-        title (string):     product title
-        price (float):      product price
-        seller_email (string):  email of seller
-        update_params:   Hash table of entries to update
-
-    Returns:
-       True if update succeeded otherwise False
-    '''
-
-    # Current time
-    last_modified_date = datetime.date.today()
-
-    # Search for current product to be updated
-    current_product = (Product.query.filter_by
-                       (title=title, seller_email=seller_email).first())
-    # Check if product exists
-    if current_product is None:
-        return False
-
-    # ------ Validate that all attributes follow the requirements ----
-    # Not all parameters can be updated
-    allowed_params = {'description', 'title', 'price'}
-    for param in update_params:
-        if param not in allowed_params:
-            return False    
-
-    # Check that title format is correct
-    if 'title' in update_params:
-        if not check_title(update_params['title']):
-            return False
-
-    # Check that the description is of the correct length
-    if 'description' in update_params:
-        if not check_description(update_params['description'], title):
-            return False
-
-    # Check that price is within the allowed
-    # range and can only be increased.
-    if 'price' in update_params:
-        if not check_price(update_params['price']):
-            return False
-        elif price > update_params['price']:
-            return False
-
-    # Check if date is within the allowed range.
-    if not check_date(last_modified_date):
-        return False
-
-    # ---- Update attributes ----
-    if 'title' in update_params:
-        current_product.title = update_params['title']
-
-    if 'description' in update_params:
-        current_product.description = update_params['description']
-
-    if 'price' in update_params:
-        current_product.price = update_params['price']
-
-    current_product.last_modified_date = last_modified_date
-
-    # actually save the user object
-    db.session.commit()
-
-    return True

@@ -1,5 +1,5 @@
 from qbay.models import register, login, \
-    create_product, update_user, update_product
+    create_product, update_user, update_product, order
 import datetime
 
 
@@ -471,3 +471,28 @@ def test_r5_4_update_product():
                             'test0@test.com',
                             {'price': 1000000.00})
     assert result is False
+
+
+def test_r6_1_order():
+    '''
+    Testing R6-1: A user can place an order on the products
+    '''
+
+    # login two users
+    user0 = login('test0@test.com', 'Legalpass!')
+    user1 = login('test1@test.com', 'Legalpass!')
+    
+    # create a new product for user 0
+    result = create_product("trans product",
+                            "24 character description",
+                            12.0, "test0@test.com")
+    assert result is True
+
+    user0_old_balance = user0.balance
+    user1_old_balance = user1.balance
+
+    # have user 1 buy that product
+    result = order("trans product", "test0@test.com", "test1@test.com")
+    assert result is True
+    assert user0.balance == user0_old_balance + 12.0
+    assert user1.balance == user1_old_balance - 12.0
