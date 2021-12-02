@@ -46,8 +46,6 @@ def test_up_title_alphanumeric():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -69,8 +67,6 @@ def test_up_title_non_alphanumeric():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -100,8 +96,6 @@ def test_up_title_no_chars():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -124,8 +118,6 @@ def test_up_title_in_range_chars():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -147,8 +139,6 @@ def test_up_title_max_range():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -179,8 +169,6 @@ def test_up_description_min_range():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -202,8 +190,6 @@ def test_up_description_mid_range():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -228,8 +214,6 @@ def test_up_description_max_range():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -251,8 +235,6 @@ def test_up_description_overmax_range():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -282,8 +264,6 @@ def test_up_desc_equals_title():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -307,8 +287,6 @@ def test_up_desc_less_than_title():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -330,8 +308,6 @@ def test_up_desc_larger_than_title():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -362,8 +338,6 @@ def test_up_price_under_min():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -385,8 +359,6 @@ def test_up_price_min():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -410,8 +382,6 @@ def test_up_price_max():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -434,8 +404,6 @@ def test_up_price_over_max():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()
 
@@ -466,8 +434,6 @@ def test_up_price_decrease():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -491,8 +457,6 @@ def test_up_price_unchanged():
         text=True,
     ).stdout
 
-    print('outputs:', output)
-
     assert output.strip() == expected_out.strip()
 
 
@@ -515,7 +479,5 @@ def test_up_price_decrease():
         capture_output=True,
         text=True,
     ).stdout
-
-    print('outputs:', output)
 
     assert output.strip() == expected_out.strip()

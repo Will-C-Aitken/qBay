@@ -1,5 +1,5 @@
 from qbay.models import register, login, \
-    create_product, update_user, update_product, order
+    create_product, update_user, update_product, order, get_products
 import datetime
 
 
@@ -475,8 +475,7 @@ def test_r5_4_update_product():
 
 def test_r6_1_order():
     '''
-    Testing R6-1: A user can place an order
-    on the products
+    Testing R6-1: A user can place an order on the products
     '''
 
     # login two users
@@ -550,3 +549,15 @@ def test_r6_3_order():
     assert user1.balance == user1_old_balance
 
 
+def test_r7_1_get_products():
+    '''
+    Testing R7-1: get list of available products
+    '''
+    
+    # Three products currently created, all three are visible to user0
+    user0_products = get_products("test0@test.com")
+    assert len(user0_products) == 3
+
+    # The last is invisible to user1 because it was just bought by them
+    user1_products = get_products("test1@test.com")
+    assert len(user1_products) == 2

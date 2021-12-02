@@ -446,6 +446,30 @@ def order(prod_title, seller_email, buyer_email, date=datetime.date.today()):
     return True
 
 
+def get_products(user_email):
+    '''
+    Get list of products excluding those bought by the current user.
+
+    Parameters:
+        user_email (string): the sellers email
+
+    Returns:
+        list of Products
+    '''
+
+    products = Product.query.all()
+
+    # As long as user has not bought product, list it
+    filtered_products = []
+    for p in products:
+        trans = Transaction.query.filter_by(buyer_email=user_email, 
+                                            product_id_num=p.id_num).first()
+        if trans is None:
+            filtered_products.append(p)
+
+    return filtered_products
+
+
 def check_email(email):
     '''
     Verify that email conforms to RFC 5322 (with a few extra constraints,
