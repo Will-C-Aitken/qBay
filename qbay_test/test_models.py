@@ -1,5 +1,5 @@
-from qbay.models import register, login, \
-    create_product, update_user, update_product, order, get_products
+from qbay.models import register, login, create_product, update_user, \
+    update_product, order, get_avail_products, get_sold_products
 import datetime
 
 
@@ -498,15 +498,34 @@ def test_r6_1_order():
     assert user1.balance == user1_old_balance - 12.0
 
 
-def test_r7_1_get_products():
+def test_r7_1_get_avail_products():
     '''
     Testing R7-1: get list of available products
     '''
     
-    # Three products currently created, all three are visible to user0
-    user0_products = get_products("test0@test.com")
-    assert len(user0_products) == 3
+    # Three products currently created, but one bought
+    avail_prods = get_avail_products()
+    assert len(avail_prods) == 2
 
-    # The last is invisible to user1 because it was just bought by them
-    user1_products = get_products("test1@test.com")
-    assert len(user1_products) == 2
+    # The sold product should not be available
+    for p in avail_prods:
+        assert (p.title != "trans product") or \
+               (p.seller_email != "test0@test.com")
+
+
+def test_r8_1_get_sold_products():
+    '''
+    Testing R8-1: get list of products sold by a user
+    '''
+
+    # User 0 has sold one product
+    user0_sold_prods = get_sold_products("test0@test.com")
+    assert len(user0_sold_prods) == 1
+    
+    assert user0_sold_prods[0].title == "trans product" and \
+           user0_sold_prods[0].seller_email == "test0@test.com"
+    
+    # User 1 has not sold anything
+    user1_sold_prods = get_sold_products("test1@test.com")
+    assert len(user1_sold_prods) == 0
+    
