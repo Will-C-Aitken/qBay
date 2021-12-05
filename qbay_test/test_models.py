@@ -1,5 +1,5 @@
-from qbay.models import register, login, \
-    create_product, update_user, update_product
+from qbay.models import register, login, create_product, update_user, \
+    update_product, order, get_avail_products, get_sold_products
 import datetime
 
 
@@ -471,3 +471,61 @@ def test_r5_4_update_product():
                             'test0@test.com',
                             {'price': 1000000.00})
     assert result is False
+
+
+def test_r6_1_order():
+    '''
+    Testing R6-1: A user can place an order on the products
+    '''
+
+    # login two users
+    user0 = login('test0@test.com', 'Legalpass!')
+    user1 = login('test1@test.com', 'Legalpass!')
+    
+    # create a new product for user 0
+    result = create_product("trans product",
+                            "24 character description",
+                            12.0, "test0@test.com")
+    assert result is True
+
+    user0_old_balance = user0.balance
+    user1_old_balance = user1.balance
+
+    # have user 1 buy that product
+    result = order("trans product", "test0@test.com", "test1@test.com")
+    assert result is True
+    assert user0.balance == user0_old_balance + 12.0
+    assert user1.balance == user1_old_balance - 12.0
+
+
+def test_r7_1_get_avail_products():
+    '''
+    Testing R7-1: get list of available products
+    '''
+    
+    # Three products currently created, but one bought
+    avail_prods = get_avail_products()
+    assert len(avail_prods) == 2
+
+    # The sold product should not be available
+    for p in avail_prods:
+        assert (p.title != "trans product") or \
+               (p.seller_email != "test0@test.com")
+
+
+def test_r8_1_get_sold_products():
+    '''
+    Testing R8-1: get list of products sold by a user
+    '''
+
+    # User 0 has sold one product
+    user0_sold_prods = get_sold_products("test0@test.com")
+    assert len(user0_sold_prods) == 1
+    
+    assert user0_sold_prods[0].title == "trans product" and \
+           user0_sold_prods[0].seller_email == "test0@test.com"
+    
+    # User 1 has not sold anything
+    user1_sold_prods = get_sold_products("test1@test.com")
+    assert len(user1_sold_prods) == 0
+    

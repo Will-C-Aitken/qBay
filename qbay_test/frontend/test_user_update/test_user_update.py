@@ -12,8 +12,6 @@ expected_in = open(current_folder.joinpath(
 expected_out = open(current_folder.joinpath(
     'test_user_update.out')).read()
 
-print(expected_out)
-
 
 def test_login():
     """
