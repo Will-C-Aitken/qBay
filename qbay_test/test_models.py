@@ -498,6 +498,7 @@ def test_r6_1_order():
     assert user1.balance == user1_old_balance - 12.0
 
 
+
 def test_r6_2_order():
     '''
     Testing R6-2: A user cannot place an order
@@ -557,6 +558,7 @@ def test_r7_1_get_avail_products():
     # Three products currently created, but one bought
     avail_prods = get_avail_products()
     assert len(avail_prods) == 2  # all products created in database
+  
 
     # The sold product should not be available
     for p in avail_prods:
@@ -615,3 +617,4 @@ def test_r8_3_get_sold_products():
     result = (user0_sold_prods[0].title == "trans product") and \
              (user0_sold_prods[0].seller_email == "test0@test.com")
     assert result is True
+    
