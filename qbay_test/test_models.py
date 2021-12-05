@@ -556,7 +556,7 @@ def test_r7_1_get_avail_products():
 
     # Three products currently created, but one bought
     avail_prods = get_avail_products()
-    assert len(avail_prods) == 51  # all products created in database
+    assert len(avail_prods) == 2  # all products created in database
 
     # The sold product should not be available
     for p in avail_prods:
