@@ -498,7 +498,6 @@ def test_r6_1_order():
     assert user1.balance == user1_old_balance - 12.0
 
 
-
 def test_r6_2_order():
     '''
     Testing R6-2: A user cannot place an order
