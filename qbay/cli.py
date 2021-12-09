@@ -235,7 +235,7 @@ def available_products_page(user):
 
     # Get product from list, and navigate to order page
     if selection.isdigit() and 1 <= int(selection) <= len(available_products):
-        product = available_products[int(selection)-1]
+        product = available_products[int(selection) - 1]
         order_page(user, product)
     else:
         print("Returning to main menu.")
@@ -296,12 +296,13 @@ def sold_products_page(user):
     selection = input()
     selection = selection.strip()
     if selection.isdigit() and 1 <= int(selection) <= len(sold_products):
-        product = sold_products[int(selection)-1]
+        product = sold_products[int(selection) - 1]
         print("Title: " + product.title)
         print("Price: " + str(product.price))
         print("Seller: " + product.seller_email)
         print("Description: " + product.description)
-        escape = input("\nHit enter (without input) to return to the main menu.")
+        escape = input("\nHit enter (without input) to return to the "
+                       "main menu.")
         return
     else:
         return
