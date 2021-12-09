@@ -189,17 +189,15 @@ def test_order_prod_sql_injection():
                  order.
          """
     error_causing_inputs = []
-    user_num = 1
     for payload in all_payloads:
         try:
             order(payload,
-                  "seller_injection_test" + str(user_num) + "@qbay.com",
-                  "buyer_injection_test" + str(user_num) + "@qbay.com",
+                  "test0@test.com",
+                  "test1@test.com",
                   datetime.date(2022, 9, 29))
         except Exception as e:
             print("Error from product title {" + payload + "}: " + str(e))
             error_causing_inputs.append(payload)
-        user_num += 1
     assert not error_causing_inputs
 
 
@@ -215,17 +213,15 @@ def test_order_seller_sql_injection():
                  order.
          """
     error_causing_inputs = []
-    user_num = 1
     for payload in all_payloads:
         try:
-            order("ProductInjection" + str(user_num),
+            order("trans product",
                   payload,
-                  "buyer_injection_test" + str(user_num) + "@qbay.com",
+                  "test1@qbay.com",
                   datetime.date(2022, 9, 29))
         except Exception as e:
             print("Error from seller email {" + payload + "}: " + str(e))
             error_causing_inputs.append(payload)
-        user_num += 1
     assert not error_causing_inputs
 
 
@@ -241,17 +237,15 @@ def test_order_buyer_sql_injection():
                  order.
          """
     error_causing_inputs = []
-    user_num = 1
     for payload in all_payloads:
         try:
-            order("ProductInjection" + str(user_num),
-                  "seller_injection_test" + str(user_num) + "@qbay.com",
+            order("trans product",
+                  "test0@qbay.com",
                   payload,
                   datetime.date(2022, 9, 29))
         except Exception as e:
             print("Error from buyer email {" + payload + "}: " + str(e))
             error_causing_inputs.append(payload)
-        user_num += 1
     assert not error_causing_inputs
 
 
@@ -266,12 +260,10 @@ def test_sp_email_sql_injection():
                  get_sold_products.
          """
     error_causing_inputs = []
-    product_num = 1
     for payload in all_payloads:
         try:
             get_sold_products(payload)
         except Exception as e:
             print("Error from seller email {" + payload + "}: " + str(e))
             error_causing_inputs.append(payload)
-        product_num += 1
     assert not error_causing_inputs
