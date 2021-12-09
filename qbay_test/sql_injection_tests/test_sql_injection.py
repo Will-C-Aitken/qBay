@@ -271,7 +271,7 @@ def test_sp_email_sql_injection():
         try:
             get_sold_products(payload)
         except Exception as e:
-            print("Error from email {" + payload + "}: " + str(e))
+            print("Error from seller email {" + payload + "}: " + str(e))
             error_causing_inputs.append(payload)
         product_num += 1
     assert not error_causing_inputs
