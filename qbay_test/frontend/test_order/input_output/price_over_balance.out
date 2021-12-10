@@ -1,0 +1,46 @@
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Please input email: Please input password: Welcome OrderUser1
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+(5) View products available for purchase
+(6) View products you sold
+Products available for purchase.
+
+1. order product1 ($11.0)
+2. order product2 ($101.0)
+3. order product4 ($11.0)
+4. product 1 ($13.0)
+5. product 1 ($11.0)
+6. my product ($12.0)
+7. high cost product 1 ($100.0)
+8. testProduct1 ($11.0)
+9. testProduct3 ($11.0)
+10. testProduct6 ($11.0)
+11. testProduct8 ($11.0)
+12. testProduct11 ($11.0)
+13. testProduct13 ($11.0)
+
+To view a product, enter the number to its left.
+Or hit enter (without input) to return to the main menu.
+Title: order product2
+Price: 101.0
+Seller: order_user2@qbay.com
+Description: 24 character description
+
+To order this product, enter 'order'.
+Or hit enter (without input) to return to the main menu.
+Order was unsuccessful.
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+(5) View products available for purchase
+(6) View products you sold
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Exiting program
