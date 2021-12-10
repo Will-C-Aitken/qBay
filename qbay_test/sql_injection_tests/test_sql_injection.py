@@ -175,3 +175,95 @@ def test_register_password_sql_injection():
             error_causing_inputs.append(payload)
         user_num += 1
     assert not error_causing_inputs
+
+
+def test_order_prod_sql_injection():
+    """
+         A function that tests whether the product title field of the
+         order function is vulnerable to SQL injection attacks. For
+         each payload, we run the order function with the payload as
+         the product title.
+         All other parameters are set to a legal value.
+
+         :raise: AssertionError if one or more payloads cause an error in
+                 order.
+         """
+    error_causing_inputs = []
+    for payload in all_payloads:
+        try:
+            order(payload,
+                  "test0@test.com",
+                  "test1@test.com",
+                  datetime.date(2022, 9, 29))
+        except Exception as e:
+            print("Error from product title {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+    assert not error_causing_inputs
+
+
+def test_order_seller_sql_injection():
+    """
+         A function that tests whether the seller email field of the
+         order function is vulnerable to SQL injection attacks. For
+         each payload, we run the order function with the payload as
+         the seller email.
+         All other parameters are set to a legal value.
+
+         :raise: AssertionError if one or more payloads cause an error in
+                 order.
+         """
+    error_causing_inputs = []
+    for payload in all_payloads:
+        try:
+            order("trans product",
+                  payload,
+                  "test1@qbay.com",
+                  datetime.date(2022, 9, 29))
+        except Exception as e:
+            print("Error from seller email {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+    assert not error_causing_inputs
+
+
+def test_order_buyer_sql_injection():
+    """
+         A function that tests whether the buyer email field of the
+         order function is vulnerable to SQL injection attacks. For
+         each payload, we run the order function with the payload as
+         the buyer email.
+         All other parameters are set to a legal value.
+
+         :raise: AssertionError if one or more payloads cause an error in
+                 order.
+         """
+    error_causing_inputs = []
+    for payload in all_payloads:
+        try:
+            order("trans product",
+                  "test0@qbay.com",
+                  payload,
+                  datetime.date(2022, 9, 29))
+        except Exception as e:
+            print("Error from buyer email {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+    assert not error_causing_inputs
+
+
+def test_sp_email_sql_injection():
+    """
+         A function that tests whether the seller email field of the
+         get_sold_products function is vulnerable to SQL injection attacks.
+         For each payload, we run the get_sold_products function with
+         the payload as the password.
+
+         :raise: AssertionError if one or more payloads cause an error in
+                 get_sold_products.
+         """
+    error_causing_inputs = []
+    for payload in all_payloads:
+        try:
+            get_sold_products(payload)
+        except Exception as e:
+            print("Error from seller email {" + payload + "}: " + str(e))
+            error_causing_inputs.append(payload)
+    assert not error_causing_inputs
