@@ -6,6 +6,8 @@ Please choose from the following options:
 (2) Update product
 (3) Update profile
 (4) Return to login page
+(5) View products available for purchase
+(6) View products you sold
 
     You will now be prompted to enter information about your new product.
     Each product requires [1] a title (<80 alphanumeric characters), [2]
@@ -20,5 +22,7 @@ Please choose from the following options:
 (2) Update product
 (3) Update profile
 (4) Return to login page
+(5) View products available for purchase
+(6) View products you sold
 Welcome. Please type 1 to login, 2 to register, or 3 to quit
 Exiting program

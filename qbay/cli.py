@@ -1,6 +1,4 @@
-from qbay.models import login, register, create_product, \
-    update_product, Product, \
-    update_user
+from qbay.models import *
 
 
 def home_page(user):
@@ -20,6 +18,8 @@ def home_page(user):
         print('(2) Update product')
         print('(3) Update profile')
         print('(4) Return to login page')
+        print('(5) View products available for purchase')
+        print('(6) View products you sold')
         selection = input()
         selection = selection.strip()
 
@@ -38,6 +38,14 @@ def home_page(user):
         # Return to login
         elif selection == '4':
             break
+
+        # View available products
+        elif selection == '5':
+            available_products_page(user)
+
+        # View products you sold
+        elif selection == '6':
+            sold_products_page(user)
 
         else:
             print('Invalid option')
@@ -202,3 +210,106 @@ def update_profile_page(user):
     else:
         print('Update Failed')
     return
+
+
+def available_products_page(user):
+    """
+    Available products page, where a user can view products that
+    are still available for purchase, and then navigate to the
+    order page.
+    """
+    # Get available products
+    available_products = get_avail_products()
+
+    # Print the list of products
+    print("Products available for purchase.\n")
+    for i in range(0, len(available_products)):
+        print(str(i + 1) + ". " + available_products[i].title +
+              " ($" + str(available_products[i].price) + ")")
+
+    print("\nTo view a product, enter the number to its left.")
+    print("Or hit enter (without input) to return to the main menu.")
+    # User selection
+    selection = input()
+    selection = selection.strip()
+
+    # Get product from list, and navigate to order page
+    if selection.isdigit() and 1 <= int(selection) <= len(available_products):
+        product = available_products[int(selection) - 1]
+        order_page(user, product)
+    else:
+        print("Returning to main menu.")
+        return
+
+
+def order_page(user, product):
+    """
+    Order page, where a User can see the detailed information about
+    a product, and place an order.
+    """
+    # Print product details
+    print("Title: " + product.title)
+    print("Price: " + str(product.price))
+    print("Seller: " + product.seller_email)
+    print("Description: " + product.description)
+
+    print("\nTo order this product, enter 'order'.")
+    print("Or hit enter (without input) to return to the main menu.")
+    # Get User input
+    choice = input()
+    choice = choice.strip()
+
+    # Place order
+    if choice.lower() == "order":
+        result = order(product.title,
+                       product.seller_email,
+                       user.email)
+        if result is True:
+            print("Product successfully ordered!")
+            print("Your new balance is " + str(user.balance))
+            return
+        else:
+            print("Order was unsuccessful.")
+            return
+
+    else:
+        print("returning to main menu.")
+        return
+
+
+def sold_products_page(user):
+    """
+    Page where a User can view the products that they sold.
+    Note that Users can only ever see their own sold products.
+    """
+    sold_products = get_sold_products(user.email)
+    print("Your sold products:\n")
+
+    # Display sold products
+    for i in range(0, len(sold_products)):
+        print(str(i + 1) + ". " + sold_products[i].title +
+              " ($" + str(sold_products[i].price) + ")")
+
+    print("\nTo view a product's details, enter the number to its left.")
+    print("Or hit enter (without input) to return to the main menu.")
+    # Get user input
+    selection = input()
+    selection = selection.strip()
+    if selection.isdigit() and 1 <= int(selection) <= len(sold_products):
+        product = sold_products[int(selection) - 1]
+        print("Title: " + product.title)
+        print("Price: " + str(product.price))
+        print("Seller: " + product.seller_email)
+        print("Description: " + product.description)
+        escape = input("\nHit enter (without input) to return to the "
+                       "main menu.")
+        return
+    else:
+        return
+
+
+
+
+
+
+
