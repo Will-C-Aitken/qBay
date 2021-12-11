@@ -554,9 +554,10 @@ def test_r7_1_get_avail_products():
     Testing R7-1: get list of available products
     '''
 
-    # Three products currently created, but one bought
+    # 9 products currently created, but 1 bought
+    # Some come from frontend testing file test_order.py
     avail_prods = get_avail_products()
-    assert len(avail_prods) == 4  # all products created in database
+    assert len(avail_prods) == 8  # all available products in database
 
     # The sold product should not be available
     for p in avail_prods:

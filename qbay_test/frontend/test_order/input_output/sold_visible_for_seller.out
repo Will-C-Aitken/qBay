@@ -1,0 +1,32 @@
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Please input email: Please input password: Welcome OrderUser2
+
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+(5) View products available for purchase
+(6) View products you sold
+Your sold products:
+
+1. order product3 ($11.0)
+2. order product4 ($11.0)
+
+To view a product's details, enter the number to its left.
+Or hit enter (without input) to return to the main menu.
+Title: order product3
+Price: 11.0
+Seller: order_user2@qbay.com
+Description: 24 character description
+
+Hit enter (without input) to return to the main menu.
+Please choose from the following options:
+(1) Create product
+(2) Update product
+(3) Update profile
+(4) Return to login page
+(5) View products available for purchase
+(6) View products you sold
+Welcome. Please type 1 to login, 2 to register, or 3 to quit
+Exiting program
