@@ -6,7 +6,7 @@ def main():
     while True:
 
         # Upon starting app, user can login, register or quit
-        selection = input('\nWelcome. Please type 1 to login, 2 to register, ' 
+        selection = input('Welcome. Please type 1 to login, 2 to register, ' 
                           'or 3 to quit\n')
         selection = selection.strip()
 
