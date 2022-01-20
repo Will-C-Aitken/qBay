@@ -52,16 +52,27 @@ def home_page(user):
 
 
 def login_page():
+    """
+    Login page prompts user for their email and password and returns the
+    result of the attempted login.
+    """
+
     email = input('Please input email: ')
     password = input('Please input password: ')
     return login(email, password)
 
 
 def register_page():
+    """
+    Registration page prompts user for the required registration information
+    and returns the result of the attempted registration.
+    """
+
     email = input('Please input email: ')
     user = input('Please input username: ')
     password = input('Please input password: ')
     password_twice = input('Please input the password again: ')
+
     if password != password_twice:
         print('Passwords entered are not the same')
     elif register(user, email, password):
